@@ -19,18 +19,22 @@ font-size: xx-large;">
     </p>
     <canvas id="canvas" name="game"></canvas>
     <script>
+        // Adding websocket (port 81 is for ESP8266)
         var connection = new WebSocket('ws://' + "192.168.4.1" + ':81/', ['arduino']);
+        // Sends date to Arduino (on connection)
         connection.onopen = function () {
             connection.send('Connect ' + new Date());
         };
+        // Sends alert with error (on error)
         connection.onerror = function (error) {
             console.log('WebSocket Error ', error);
             alert('WebSocket Error ', error);
         };
+        // Prints out message form from Arduino
         connection.onmessage = function (e) {
             console.log('Server: ', e.data);
         };
-
+        // Function to save joystick values
         function send(x,y,speed,angle){
             var data = {"x":x,"y":y,"speed":speed,"angle":angle};
             data = JSON.stringify(data);

@@ -2,10 +2,10 @@
 #include <WebServer.h>
 #include <WebSocketsServer.h>
 //-----------------------------------------------
-const char* ssid = "KV1";
-const char* password = "fuck1688";
+const char* ssid = "POCO";
+const char* password = "test1234";
 //-----------------------------------------------
-#define LED 2
+#define LED 33
 //-----------------------------------------------
 WebServer server(80);
 WebSocketsServer webSocket = WebSocketsServer(81);

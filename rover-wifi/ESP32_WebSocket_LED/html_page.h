@@ -42,8 +42,8 @@ R"=====(
        websock.onmessage = function(evt)
        {
           JSONobj = JSON.parse(evt.data);
-          document.getElementById('btn').innerHTML = JSONobj.LEDonoff;
-          if(JSONobj.LEDonoff == 'ON')
+          document.getElementById('btn').innerHTML = JSONobj.motoronoff;
+          if(JSONobj.motoronoff == 'ON')
           {
             document.getElementById('btn').style.background='#FF0000';
             document.getElementById('btn').style["boxShadow"] = "0px 0px 0px 8px #FF0000";
@@ -58,10 +58,10 @@ R"=====(
      //-------------------------------------------------------------
      function button()
      {
-        btn = 'LEDonoff=ON';
+        btn = 'motoronoff=ON';
         if(document.getElementById('btn').innerHTML == 'ON')
         {
-          btn = 'LEDonoff=OFF';
+          btn = 'motoronoff=OFF';
         }
         websock.send(btn);
      }

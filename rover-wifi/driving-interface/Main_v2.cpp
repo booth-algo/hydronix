@@ -112,29 +112,28 @@ struct Driving_system{
   
 };
 
+//+++++++++++++++++EXAMPLE STARTS HERE+++++++++++++++++++++++//
 //global variables:
-Driving_system buggy(33,32,26,25);
+Driving_system buggy(33,32,26,25); //inputs are the pins for the motors
 
 void setup() {
   Serial.begin(115200);
   Serial.println("setup started");
-  buggy.begin();
+  buggy.begin(); //must be called in setup() - initialises stuff properly (can't be done in constructor as you can't control the order of the constructors)
   
   Serial.println("setup complete");
 }
 
-
-
 void loop() {
-  Serial.print("hall: "); Serial.println(hallRead());
-  buggy.set(255,0);
-  Serial.println("walking");
+  Serial.print("hall: "); Serial.println(hallRead()); //hallRead is part of the esp32 api - thought it was cool so i put it here
+  buggy.set(255,0);//sets the speed and direction of the buggy set(speed, direction). both values go from -255 to 255
+  Serial.println("forward");
   delay(2000);
   buggy.set(-255,0);
-  Serial.println("walking backward");
+  Serial.println("backward");
   delay(2000);
   buggy.set(0,-225);
-  Serial.println("left");
+  Serial.println("left"); //note: there are many ways to go left and right. i will improve the driving system at a later date.
   delay(2000);
   buggy.set(0,225);
   Serial.println("right");

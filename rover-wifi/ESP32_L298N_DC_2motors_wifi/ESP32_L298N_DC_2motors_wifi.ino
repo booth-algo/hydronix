@@ -51,8 +51,8 @@ int       motor2StopState=HIGH;//Stope state of motor (HIGH means STOP) and LOW 
 #include <WebServer.h>
 #include <ESPmDNS.h>
 
-const char *ssid = "KV1";
-const char *password = "wasd1234";
+const char *ssid = "POCO";
+const char *password = "test1234";
 
 WebServer server(80);
 

@@ -17,13 +17,7 @@ const int CW  = 1; // do not change
 #define motor1 1 // do not change
 #define motor2 2 // do not change
 
-// for single motor
-//Robojax_L298N_DC_motor motor(IN1, IN2, ENA, CHA, true);  
-
-// for two motors without debug information // Watch video instruciton for this line: https://youtu.be/2JTMqURJTwg
-//Robojax_L298N_DC_motor motor(IN1, IN2, ENA, CHA, IN3, IN4, ENB, CHB);/
-
-// fore two motors with debut information
+// for two motors with debut information
 Robojax_L298N_DC_motor motor(IN1, IN2, ENA, CHA, IN3, IN4, ENB, CHB, true);
 
 
@@ -44,15 +38,13 @@ int       motor2StopState=HIGH;//Stope state of motor (HIGH means STOP) and LOW 
 
 #include "ESP32_L298N_DC_motor_wifi_page.h"
 
-
-  
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <WebServer.h>
 #include <ESPmDNS.h>
 
-const char *ssid = "Robojax";
-const char *password = "YouTube2019_o_";
+const char *ssid = "POCO";
+const char *password = "test1234";
 
 WebServer server(80);
 

@@ -10,7 +10,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
   Serial.print("payloadString= ");
   Serial.println(payloadString);
 
-  if(type == WStype_TEXT) //receive text from client
+  if(type == WStype_TEXT) //receive text from client 
   {
     byte separator=payloadString.indexOf('=');
     String var = payloadString.substring(0,separator);

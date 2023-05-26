@@ -1,0 +1,342 @@
+const char webpageCode[] PROGMEM =
+R"=====(
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>ESP32 Web Server</title>
+</head>
+<!-------------------------------C S S------------------------------>
+<style>
+    table {
+      position: relative;
+      width:100%;
+      border-spacing: 0px;
+    }
+    tr {
+      border: 1px solid white;
+      font-family: "Verdana", "Arial", sans-serif;
+      font-size: 20px;
+    }
+    th {
+      height: 20px;
+      padding: 3px 15px;
+      background-color: #343a40;
+      color: #FFFFFF !important;
+      }
+    td {
+      height: 20px;
+       padding: 3px 15px;
+    }
+    .tabledata {
+      font-size: 24px;
+      position: relative;
+      padding-left: 5px;
+      padding-top: 5px;
+      height:   25px;
+      border-radius: 5px;
+      color: #FFFFFF;
+      line-height: 20px;
+      transition: all 200ms ease-in-out;
+      background-color: #00AA00;
+    }
+    .fanrpmslider {
+      width: 30%;
+      height: 55px;
+      outline: none;
+      height: 25px;
+    }
+    .bodytext {
+      font-family: "Verdana", "Arial", sans-serif;
+      font-size: 24px;
+      text-align: left;
+      font-weight: light;
+      border-radius: 5px;
+      display:inline;
+    }
+    .navbar {
+      width: 100%;
+      height: 50px;
+      margin: 0;
+      padding: 10px 0px;
+      background-color: #FFF;
+      color: #000000;
+      border-bottom: 5px solid #293578;
+    }
+    .fixed-top {
+      position: fixed;
+      top: 0;
+      right: 0;
+      left: 0;
+      z-index: 1030;
+    }
+    .navtitle {
+      float: left;
+      height: 50px;
+      font-family: "Verdana", "Arial", sans-serif;
+      font-size: 50px;
+      font-weight: bold;
+      line-height: 50px;
+      padding-left: 20px;
+    }
+   .navheading {
+     position: fixed;
+     left: 60%;
+     height: 50px;
+     font-family: "Verdana", "Arial", sans-serif;
+     font-size: 20px;
+     font-weight: bold;
+     line-height: 20px;
+     padding-right: 20px;
+   }
+   .navdata {
+      justify-content: flex-end;
+      position: fixed;
+      left: 70%;
+      height: 50px;
+      font-family: "Verdana", "Arial", sans-serif;
+      font-size: 20px;
+      font-weight: bold;
+      line-height: 20px;
+      padding-right: 20px;
+   }
+    .category {
+      font-family: "Verdana", "Arial", sans-serif;
+      font-weight: bold;
+      font-size: 32px;
+      line-height: 50px;
+      padding: 20px 10px 0px 10px;
+      color: #000000;
+    }
+    .heading {
+      font-family: "Verdana", "Arial", sans-serif;
+      font-weight: normal;
+      font-size: 28px;
+      text-align: left;
+    }
+  
+    .btn {
+      background-color: #444444;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+    .foot {
+      font-family: "Verdana", "Arial", sans-serif;
+      font-size: 20px;
+      position: relative;
+      height:   30px;
+      text-align: center;   
+      color: #AAAAAA;
+      line-height: 20px;
+    }
+    .container {
+      max-width: 1800px;
+      margin: 0 auto;
+    }
+    table tr:first-child th:first-child {
+      border-top-left-radius: 5px;
+    }
+    table tr:first-child th:last-child {
+      border-top-right-radius: 5px;
+    }
+    table tr:last-child td:first-child {
+      border-bottom-left-radius: 5px;
+    }
+    table tr:last-child td:last-child {
+      border-bottom-right-radius: 5px;
+    }
+</style>
+
+<!------------------------------H T M L----------------------------->
+<body>
+<!-----------------------------JavaScript--------------------------->
+  <script>
+        InitWebSocket()
+        function InitWebSocket()
+        {
+        websock = new WebSocket('ws://'+window.location.hostname+':81/'); 
+        websock.onmessage = function(evt)
+        {
+            JSONobj = JSON.parse(evt.data);
+            document.getElementById('btn').innerHTML = JSONobj.motoronoff;
+        }
+        }
+
+        // Function to save joystick values
+        function send(x,y,speed,angle){
+            var data = {"x":x,"y":y,"speed":speed,"angle":angle};
+            data = JSON.stringify(data);
+            console.log(data);
+            websock.send(data);
+        }
+
+    </script>
+
+    <h1 style="text-align:center">
+        Hydronix</h1>
+    <p style="text-align: center;">
+        X: <span id="x_coordinate"> </span>
+        Y: <span id="y_coordinate"> </span>
+        Speed: <span id="speed"> </span> %
+        Angle: <span id="angle"> </span>
+    </p>
+    <canvas id="canvas" name="game"></canvas>
+
+    <script>
+        var canvas, ctx;
+
+        window.addEventListener('load', () => {
+
+            canvas = document.getElementById('canvas');
+            ctx = canvas.getContext('2d');          
+            resize(); 
+
+            document.addEventListener('mousedown', startDrawing);
+            document.addEventListener('mouseup', stopDrawing);
+            document.addEventListener('mousemove', Draw);
+
+            document.addEventListener('touchstart', startDrawing);
+            document.addEventListener('touchend', stopDrawing);
+            document.addEventListener('touchcancel', stopDrawing);
+            document.addEventListener('touchmove', Draw);
+            window.addEventListener('resize', resize);
+
+            document.getElementById("x_coordinate").innerText = 0;
+            document.getElementById("y_coordinate").innerText = 0;
+            document.getElementById("speed").innerText = 0;
+            document.getElementById("angle").innerText = 0;
+        });
+
+
+
+
+        var width, height, radius, x_orig, y_orig;
+        function resize() {
+            width = window.innerWidth;
+            radius = 100;
+            height = radius * 6.5;
+            ctx.canvas.width = width;
+            ctx.canvas.height = height;
+            background();
+            joystick(width / 2, height / 3);
+        }
+
+        function background() {
+            x_orig = width / 2;
+            y_orig = height / 3;
+
+            ctx.beginPath();
+            ctx.arc(x_orig, y_orig, radius + 30, 0, Math.PI * 2, true);
+            ctx.fillStyle = '#ECE5E5';
+            ctx.fill();
+        }
+
+        function joystick(width, height) {
+            ctx.beginPath();
+            ctx.arc(width, height, radius, 0, Math.PI * 2, true);
+            ctx.fillStyle = '#1F51FF';
+            ctx.fill();
+            ctx.strokeStyle = '#89CFF0';
+            ctx.lineWidth = 10;
+            ctx.stroke();
+        }
+
+        let coord = { x: 0, y: 0 };
+        let paint = false;
+
+        function getPosition(event) {
+            var mouse_x = event.clientX || event.touches[0].clientX;
+            var mouse_y = event.clientY || event.touches[0].clientY;
+            coord.x = mouse_x - canvas.offsetLeft;
+            coord.y = mouse_y - canvas.offsetTop;
+        }
+
+        function is_it_in_the_circle() {
+            var current_radius = Math.sqrt(Math.pow(coord.x - x_orig, 2) + Math.pow(coord.y - y_orig, 2));
+            if (radius >= current_radius) return true
+            else return false
+        }
+
+
+        function startDrawing(event) {
+            paint = true;
+            getPosition(event);
+            if (is_it_in_the_circle()) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                background();
+                joystick(coord.x, coord.y);
+                Draw();
+            }
+        }
+
+
+        function stopDrawing() {
+            paint = false;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            background();
+            joystick(width / 2, height / 3);
+            document.getElementById("x_coordinate").innerText = 0;
+            document.getElementById("y_coordinate").innerText = 0;
+            document.getElementById("speed").innerText = 0;
+            document.getElementById("angle").innerText = 0;
+
+        }
+
+        function Draw(event) {
+
+            if (paint) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                background();
+                var angle_in_degrees,x, y, speed;
+                var angle = Math.atan2((coord.y - y_orig), (coord.x - x_orig));
+
+                if (Math.sign(angle) == -1) {
+                    angle_in_degrees = Math.round(-angle * 180 / Math.PI);
+                }
+                else {
+                    angle_in_degrees =Math.round( 360 - angle * 180 / Math.PI);
+                }
+
+
+                if (is_it_in_the_circle()) {
+                    joystick(coord.x, coord.y);
+                    x = coord.x;
+                    y = coord.y;
+                }
+                else {
+                    x = radius * Math.cos(angle) + x_orig;
+                    y = radius * Math.sin(angle) + y_orig;
+                    joystick(x, y);
+                }
+
+
+                getPosition(event);
+
+                var speed =  Math.round(100 * Math.sqrt(Math.pow(x - x_orig, 2) + Math.pow(y - y_orig, 2)) / radius);
+
+                var x_relative = Math.round(x - x_orig);
+                var y_relative = Math.round(y - y_orig);
+
+
+                document.getElementById("x_coordinate").innerText =  x_relative;
+                document.getElementById("y_coordinate").innerText =y_relative ;
+                document.getElementById("speed").innerText = speed;
+                document.getElementById("angle").innerText = angle_in_degrees;
+
+                send( x_relative,y_relative,speed,angle_in_degrees);
+            }
+        } 
+    </script>
+
+
+
+
+</body>
+</html>
+)=====";

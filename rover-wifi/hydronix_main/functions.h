@@ -21,10 +21,28 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
     Serial.println(val);
     Serial.println(" ");
 
-    if(var == "motoronoff")
-    {
+    DynamicJsonDocument doc(256);  // Adjust the size as per your requirements
+    deserializeJson(doc, var);
+
+    int x = doc["x"];
+    int y = doc["y"];
+    int speed = doc["speed"];
+    int angle = doc["angle"];
+
+    Serial.print("x = ");
+    Serial.println(x);
+    Serial.print("y = ");
+    Serial.println(y);
+    Serial.print("speed = ");
+    Serial.println(speed);
+    Serial.print("angle = ");
+    Serial.println(angle);
+
       motoronoff = false;
-      if(val == "ON") motoronoff = true;
-    }
+      motorspeed = speed;
+      if(y<0) motoronoff = true;
+      if(x==0 && y==0) motorspeed = 0; //error here
+
+    
   }
 }

@@ -15,28 +15,28 @@ void setup() {
 
 void loop() {
   Serial.print("hall: "); Serial.println(hallRead());
-  buggy.set(255,0);
+  buggy.set(100,0);
   Serial.println("walking");
   delay(2000);
-  buggy.set(-255,0);
+  buggy.set(-100,0);
   Serial.println("walking backward");
   delay(2000);
-  buggy.set(0,-225);
+  buggy.set(0,-100);
   Serial.println("left");
   delay(2000);
-  buggy.set(0,255);
+  buggy.set(0,100);
   Serial.println("right");
   delay(2000);
-  buggy.set(255,-255);
+  buggy.set(100,-100);
   Serial.println("fwd left");
   delay(2000);
-  buggy.set(255,255);
+  buggy.set(100,100);
   Serial.println("fwd right");
   delay(2000);
-  buggy.set(-255,-255);
+  buggy.set(-100,-100);
   Serial.println("bwd left");
   delay(2000);
-  buggy.set(-255,255);
+  buggy.set(-100,100);
   Serial.println("bwd right");
   delay(2000);
   buggy.set(0,0);

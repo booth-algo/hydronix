@@ -6,7 +6,7 @@ const char* ssid = "POCO";
 const char* password = "test1234";
 
 // motor 1
-#define motor1pin1 12
+#define motor1pin1 33
 #define motor1pin2 14
 #define channelA 0 // pwm channel
 #define enable1 13 // enable movement pin
@@ -35,9 +35,13 @@ void setup()
   Serial.begin(115200); 
   pinMode(motor1pin1, OUTPUT);
   pinMode(motor1pin2, OUTPUT);
+  pinMode(motor2pin1, OUTPUT);
+  pinMode(motor2pin2, OUTPUT);
   pinMode(enable1, OUTPUT);
+  pinMode(enable2, OUTPUT);
 
-  ledcSetup(channelA, channelB, freq, resolution);
+  ledcSetup(channelA, freq, resolution);
+  ledcSetup(channelB, freq, resolution);
   ledcAttachPin(enable1, channelA);
   ledcAttachPin(enable2, channelB);
   ledcWrite(channelA, dutyCycle);
@@ -52,7 +56,7 @@ void setup()
   Serial.println(WiFi.localIP());
   //-----------------------------------------------
   server.on("/", webpage);
-  server.on("/stop", HTTP_GET, handleMotorBrake);
+  // server.on("/stop", HTTP_GET, handleMotorBrake);
   //-----------------------------------------------
   server.begin(); 
   webSocket.begin();

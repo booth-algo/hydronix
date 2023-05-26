@@ -82,8 +82,6 @@ struct Driving_system{
     int l_speed = speed + direction;
     int r_speed = speed - direction;
 
-    Serial.print("L and R speed: "); Serial.print(l_speed);Serial.print(" ");Serial.println(r_speed);
-
     if(abs(l_speed) + abs(r_speed) > 510){ //input out of range
       return;
     }

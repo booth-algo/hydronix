@@ -74,11 +74,11 @@ void loop()
   digitalWrite(motor2pin2, LOW);
 
   if(motoronoff == false) {
-    digitalWrite(enable1, LOW);
-    digitalWrite(enable2, LOW);
+    digitalWrite(motor1pin1, LOW);
+    digitalWrite(motor2pin1, LOW);
   } else {
-    digitalWrite(enable1, HIGH);
-    digitalWrite(enable2, HIGH);
+    digitalWrite(motor1pin1, HIGH);
+    digitalWrite(motor2pin1, HIGH);
   }
   //-----------------------------------------------
   String motorstatus = "OFF";

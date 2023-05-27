@@ -161,14 +161,14 @@ R"=====(
         function InitWebSocket()
         {
         websock = new WebSocket('ws://'+window.location.hostname+':81/'); 
-        websock.onmessage = function(evt)
+        websock.onmessage = function(evt) //recieve data
         {
             JSONobj = JSON.parse(evt.data);
             document.getElementById('btn').innerHTML = JSONobj.motoronoff;
         }
         }
 
-        // Function to save joystick values
+        // Function to send joystick values
         function send(x,y,speed,angle){
             var data = {"x":x,"y":y,"speed":speed,"angle":angle};
             data = JSON.stringify(data);
@@ -191,7 +191,7 @@ R"=====(
     <script>
         var canvas, ctx;
 
-        window.addEventListener('load', () => {
+        window.addEventListener('load', () => { //on window loading
 
             canvas = document.getElementById('canvas');
             ctx = canvas.getContext('2d');          
@@ -206,7 +206,8 @@ R"=====(
             document.addEventListener('touchcancel', stopDrawing);
             document.addEventListener('touchmove', Draw);
             window.addEventListener('resize', resize);
-
+          
+            // Seting the and y co-ordinate text should be in a sperate function. This is repeated code.
             document.getElementById("x_coordinate").innerText = 0;
             document.getElementById("y_coordinate").innerText = 0;
             document.getElementById("speed").innerText = 0;
@@ -227,7 +228,7 @@ R"=====(
             joystick(width / 2, height / 3);
         }
 
-        function background() {
+        function background() { // draw joystck background
             x_orig = width / 2;
             y_orig = height / 3;
 
@@ -237,9 +238,9 @@ R"=====(
             ctx.fill();
         }
 
-        function joystick(width, height) {
+        function joystick(x_pos, y_pos) { //draw joystick
             ctx.beginPath();
-            ctx.arc(width, height, radius, 0, Math.PI * 2, true);
+            ctx.arc(x_pos, y_pos, radius, 0, Math.PI * 2, true);
             ctx.fillStyle = '#1F51FF';
             ctx.fill();
             ctx.strokeStyle = '#89CFF0';
@@ -247,7 +248,7 @@ R"=====(
             ctx.stroke();
         }
 
-        let coord = { x: 0, y: 0 };
+        let coord = { x: 0, y: 0 }; 
         let paint = false;
 
         function getPosition(event) {
@@ -316,7 +317,7 @@ R"=====(
                 }
 
 
-                getPosition(event);
+                getPosition(event); // calling this here and not at the top of this function seems wrong.
 
                 var speed =  Math.round(100 * Math.sqrt(Math.pow(x - x_orig, 2) + Math.pow(y - y_orig, 2)) / radius);
 
@@ -324,12 +325,16 @@ R"=====(
                 var y_relative = Math.round(y - y_orig);
 
 
-                document.getElementById("x_coordinate").innerText =  x_relative;
+                document.getElementById("x_coordinate").innerText =  x_relative; //repeated code
                 document.getElementById("y_coordinate").innerText =y_relative ;
                 document.getElementById("speed").innerText = speed;
                 document.getElementById("angle").innerText = angle_in_degrees;
 
-                send( x_relative,y_relative,speed,angle_in_degrees);
+                send( x_relative,y_relative,speed,angle_in_degrees); /* this is the cause of our netcode issues i think.
+                would be better to call the send function after recieving a request for the data:
+                1 - esp32 sends request
+                2 - browser updated sensor readings if applicable and sends back joystick / other input data
+                3 - if esp32 dosnt recieve the response quick enough, send another request*/
             }
         } 
     </script>

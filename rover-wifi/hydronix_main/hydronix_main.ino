@@ -2,10 +2,13 @@
 #include <WebServer.h>
 #include <WebSocketsServer.h>
 #include <ArduinoJson.h>
-#include "DrivingSystems.h"
 
-#include "joystick_page.h"
+//custom scripts
+#include "DrivingAPI.h"
 #include "functions.h"
+
+//html page
+#include "joystick_page.h"
 
 const char* ssid = "POCO";
 const char* password = "test1234";
@@ -17,7 +20,8 @@ unsigned long previousTransmissionTime = 0;
 const unsigned long transmissionInterval = 1000;
 
 boolean motoronoff = false;
-int motorspeed = 0;
+int input_x = 0;
+int input_y = 0;
 String JSONtxt;
 
 Driving_system motors(33,32,26,25);
@@ -55,9 +59,9 @@ void loop()
     previousTransmissionTime = currentMillis;
 
     if(motoronoff == false) {
-      motors.set(-motorspeed*225/100,0); //speed, direction (-225 to 225)
+      motors.set(x,y); //speed, direction (-225 to 225)
     } else {
-      motors.set(motorspeed*225/100,0);
+      motors.set(0,0);
     }
     //-----------------------------------------------
     String motorstatus = "OFF";

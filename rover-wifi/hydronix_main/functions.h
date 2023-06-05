@@ -1,7 +1,3 @@
-
-#ifndef WebFunctions
-#define WebFunctions
-
 //handle function: send webpage to client
 void webpage()
 {
@@ -43,13 +39,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t welengt
     Serial.println(angle);
 
       motoronoff = false;
-      input_x = x;
-      input_y = y;
+      motorspeed = speed;
       if(y<0) motoronoff = true;
       if(x==0 && y==0) motorspeed = 0; //error here
 
     
   }
 }
-
-#endif

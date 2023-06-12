@@ -2,7 +2,7 @@
 V2.1 uses the new more powerful power management IC and esp32
 - improved steering
 uses pwm channels 0 - 3
-Developed by Alex Charlton*/
+Developed by Alex Charlton & Ali Ellabban */
 
 #ifndef DrivingSystem
 #define DrivingSystem

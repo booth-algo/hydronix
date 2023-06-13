@@ -1,3 +1,35 @@
+/*
+looks like a really nice start bruno, especialy given that i somewhat fucked you over by not giving you all the details on exactly what i wanted.
+
+could you possibly chuck everything in a class? heres an outline:
+
+struct RC_state{
+  int x;
+  int y;
+  int failsafe; //there is a failsafe channel on the Receiever that estimates signal strength / tells us if the RC is connected.
+}
+
+class RC {
+public:
+  RC():
+    RC_state(0,0,0)
+  {} //perhaps allow the user of you're code to specify the desired RC channels with an overloaded constructor (not necessary, but would be a nice toutch for completeness)
+  
+  void setup() {}; //probably not needed looking at you're code
+  
+  void loop() {}; //something along the lines of you're existing readRX() wouild be perfect
+  
+  RC_state get_RC_state(){
+    return state;
+  }
+
+private: //i'd prefer not using global variables if possible - could get messy.
+  RC_state state;
+};
+
+thanks, alex.
+*/
+
 #include <string.h>
 #include <ESP32Servo.h>
 

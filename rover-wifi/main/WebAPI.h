@@ -20,11 +20,12 @@ public:
     polling_interval(polling_interval), 
     last_poll(millis()), 
     handleClientData(handleClientData),
+    waiting(true),
     getData(getData)
   {}
 
   webIO(std::function<void(String)> handleClientData, std::function<String(void)> getData, const char *SSID, const char *WIFI_PASSWORD):
-    webIO(50,handleClientData,getData, SSID, WIFI_PASSWORD)
+    webIO(500,handleClientData,getData, SSID, WIFI_PASSWORD)
   {}
 
   void begin() {
@@ -35,7 +36,8 @@ public:
 
   void loop() {
      webLoop();
-     if(millis() > last_poll + polling_interval){
+     if(millis() > last_poll + polling_interval || !waiting){
+      waiting = true;
       last_poll = millis();
       String data = getData();
       pollWebPage(data);
@@ -63,7 +65,9 @@ private:
   };
 
   std::function<void(uint8_t num, WStype_t type, uint8_t *payload, size_t welength)>
-      webSocketEvent = [this](uint8_t num, WStype_t type, uint8_t *payload, size_t welength) {
+      webSocketEvent = [this](uint8_t num, WStype_t type, uint8_t *payload,
+                              size_t welength) {
+        waiting = false;
         String payloadString = (const char *)payload;
 
         if(type = WStype_TEXT){
@@ -104,6 +108,7 @@ private:
 
   int polling_interval;
   int last_poll;
+  bool waiting;
 };
 
 #endif

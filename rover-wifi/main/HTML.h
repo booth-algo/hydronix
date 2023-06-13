@@ -1,7 +1,6 @@
 const char webpageCode[] =
 R"=====(
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html>
 
 <style>
@@ -12,18 +11,23 @@ R"=====(
   		--bright: #98c1d9;
   		--clear: #e0fbfc;
 	}
+    head{
+        overscroll-behavior: none;
+    }
 	body{
+        overscroll-behavior: none;
 		background: var(--light-black);
 		font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif ;
 		color: var(--bright);
-		font-size: xx-large;
+		font-size: 4vh;
         margin: 0px;
         height: 100%;
         width: 100%;
+        overflow: hidden;
         position: fixed;
 	}
     button{
-        font-size: inherit;
+        font-size: 100%;
         background-color: var(--light-black);
         border: none;
         color: var(--bright);
@@ -43,7 +47,7 @@ R"=====(
     .title{
         position: relative;
         text-align: center;
-        font-size: xxx-large;
+        font-size: 160%;
         max-height: 15%;
         border-bottom: solid;
         border-color: var(--clear);
@@ -58,15 +62,15 @@ R"=====(
         height: 85%;
     }
     .ATtitle{
-        font-size: x-large;
+        font-size: 100%;
         width: 33.3%;
     }
-    .curentReadingSaved{
+    .currentReadingSaved{
         background-color: var(--dark);
         color: var(--bold);
         outline: 1px;
     }
-    .curentReading{
+    .currentReading{
         color: var(--clear);
         background-color: var(--dark);
         outline: 1px;
@@ -81,7 +85,7 @@ R"=====(
         display: grid;
         column-count: 1;
         height: 100%;
-        font-size: xx-large;
+        font-size: 100%;
     }
     #centreMain{
         display: grid;
@@ -102,11 +106,10 @@ R"=====(
         align-content: center;
         outline:1px solid;
         overflow-y: scroll;
-    }#sensorPause{
+    }#currentDataControls{
         display: grid;
-        padding: 4%;
-        grid-template-columns: 33% 33% 33%;
-        font-size: large !important;
+        padding: 3%;
+        grid-template-columns: 50% 50%; 
     }
 </style>
 
@@ -122,13 +125,12 @@ R"=====(
     </h1>
     <div class="main">
         <div id = "controlPannel">
-            <div id="sensorPause">
-                <button onpointerdown="lock_button(this,0)">Age</button>
-                <button onpointerdown="lock_button(this,1)">Name</button>
-                <button onpointerdown="lock_button(this,2)">Gender?</button>
+            <div id="currentDataControls">
+                <button onpointerdown="this.setAttribute('class','buttonOn')" onpointerout="this.setAttribute('class','buttonOff')" onclick="reset_current_sensors_btn(this)">Clear Readings</button>
+                <button onpointerdown="this.setAttribute('class','buttonOn')" onpointerout="this.setAttribute('class','buttonOff')" onclick="save_readings(this)">Save Readings</button>
             </div>
-            <button onpointerdown="transmitter_button(this)">radio mode</button>
-            <button onclick="reset_page()", onpointerdown="this.setAttribute('class','buttonOn')" onpointerout="this.setAttribute('class','buttonOff')">reset</button>
+            <button onpointerdown="transmitter_button(this)">Radio Mode</button>
+            <button onclick="reset_page()", onpointerdown="this.setAttribute('class','buttonOn')" onpointerout="this.setAttribute('class','buttonOff')">Reset</button>
         </div>  
         <div id = "alienData">
             <table id="alienTable">
@@ -138,9 +140,9 @@ R"=====(
                     <th class="ATtitle">Gender?</th>
                 </tr>
                 <tr>
-                    <td class = "curentReading"> --- </td>
-                    <td class = "curentReading"> --- </td>
-                    <td class = "curentReading"> --- </td>
+                    <td class = "currentReading"> --- </td>
+                    <td class = "currentReading"> --- </td>
+                    <td class = "currentReading"> --- </td>
                 </tr>
                 <tr>
                     <td class = "savedData"> --- </td>
@@ -203,22 +205,35 @@ R"=====(
             console.log('WebSocket connected');
             //connection.send('Connect ' + new Date());
         };
-        // Sends alert with error (on error)
+        
         connection.onerror = function (error) {
             console.log('WebSocket Error ', error);
-            alert('WebSocket Error ', error);
+            
+            connection = new WebSocket(`ws://${window.location.hostname}:81`, ['arduino']);
         };
-        // Prints out message form from Arduino
+       
         connection.onmessage = function (e) {
-            console.log('Server: ', e);
-            console.log(JSON.parse(e.data));
-            send();
+            let jsonData = JSON.parse(e.data);
+            update_current_sensor_state(0,jsonData["Age"]);
+            update_current_sensor_state(1,jsonData["Name"]);
+            update_current_sensor_state(2,jsonData["Gender"]);
+            update_current_sensor();
         };
+
+        connection.onclose = function (){
+            console.log("websocket disconected");
+        }
         // Function to save joystick values
+
+        setInterval(send, 50);
         function send(){
             var data = format_control_data();
-            console.log(data);
+            if(connection.readyState > 1){
+                console.log("opening new socket");
+                connection = new WebSocket(`ws://${window.location.hostname}:81`, ['arduino']);
+            }
             connection.send(JSON.stringify(data));
+            
         }
     </script>
     <script>
@@ -234,6 +249,8 @@ R"=====(
             canvas = document.getElementById('canvas');
             ctx = canvas.getContext('2d');          
             resize(); 
+            reset_page();
+
 
             document.addEventListener('mousedown', startDrawing);
             document.addEventListener('mouseup', stopDrawing);
@@ -258,32 +275,20 @@ R"=====(
             outline : BRIGHT
         };
 
-        var page_state = {
-            //send to esp32
-            joy_pos: [0,0],
-            reciever: false,
-            //determine what to store
-            curent_sensor_data: ["---","---","---"],
-            pause_sensor_data: [false, false, false],
-            sensor_data_found: [false, false, false],
-            sensor_table_data: []
-        };
-
-        for(let i = 0; i < 10; i++){
-            page_state.sensor_table_data[i] = ["---","---","---"];
-        }
+        var page_state;
 
         function reset_page(){
             page_state = {
             //send to esp32
+            joy_pos: [0,0],
             reciever: false,
             //determine what to store
-            curent_sensor_data: ["---","---","---"],
-            sensor_data_found: [false, false, false],
-            pause_sensor_data: [false, false, false],
-            sensor_table_data: []
+            sensor_table_data: [],
+            sensor_data_found: [],
+            sensor_data: []
             };
 
+            reset_current_sensors();
             for(let i = 0; i < 10; i++){
                 page_state.sensor_table_data[i] = ["---","---","---"];
             }
@@ -296,19 +301,54 @@ R"=====(
             }
 
             update_sensor_table();
-            update_curent_sensor();
+            update_current_sensor();
             for(let i = 0; i < 3; i++){
-                update_curent_sensor_color(i);
+                update_current_sensor_color(i);
             }
             set_joy_theme(0);
             resize();
         }
 
-        function update_curent_sensor(){
+        function update_current_sensor_state(index, value){
+
+            if (page_state.sensor_data_found[index]){
+                return;
+            }
+
+            if (value != null){
+                page_state.sensor_data[index] = value;
+                page_state.sensor_data_found[index] = true;
+            }
+        }
+
+        function handle_current_data_complete(){
+
+            for(i = 0; i < page_state.sensor_data_found.length; i++){
+                if (!page_state.sensor_data_found[i]){
+                    console.log("incomplete set");
+                    return;
+                }
+            }
+
+            push_current_sensor_to_table();
+            reset_current_sensors();
+            update_sensor_table();
+        }
+
+        function push_current_sensor_to_table(){
+
+            for(let i = page_state.sensor_table_data.length - 1; i > 0; i--){
+                console.log(i);
+                page_state.sensor_table_data[i] = page_state.sensor_table_data[i - 1];
+            }
+            page_state.sensor_table_data[0] = page_state.sensor_data;
+        }
+
+        function update_current_sensor(){
             let table = document.getElementById("alienTable");
-            let entries = table.getElementsByClassName("curentReading");
+            let entries = table.getElementsByClassName("currentReading");
             for(let i = 0; i < entries.length; i++){
-                entries[i].innerText = page_state.curent_sensor_data[i];
+                entries[i].innerText = page_state.sensor_data[i];
             }
         }
 
@@ -320,9 +360,9 @@ R"=====(
             }
         }
 
-        function update_curent_sensor_color(i){
-            let entries = document.getElementById("alienTable").getElementsByClassName("curentReading");
-            if(page_state.pause_sensor_data[i] == true){
+        function update_current_sensor_color(i, reseting = false){
+            let entries = document.getElementById("alienTable").getElementsByClassName("currentReading");
+            if(reseting){
                 entries[i].setAttribute("style","color: var(--light-black)");
             }else if(page_state.sensor_data_found[i] == true){
                 entries[i].setAttribute("style","color: var(--bold)");
@@ -343,6 +383,7 @@ R"=====(
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~BUTTON BINDS~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
+/* removed feature
         function lock_button(button, button_index){ //TODO: complete function
             if(page_state.pause_sensor_data[button_index] == false){
                 page_state.pause_sensor_data[button_index] = true;
@@ -351,7 +392,24 @@ R"=====(
                 button.setAttribute("class","buttonOff");
                 page_state.pause_sensor_data[button_index] = false;
             }
-            update_curent_sensor_color(button_index);
+            update_current_sensor_color(button_index);
+        }
+*/
+
+        function save_readings(btn){
+            btn.setAttribute("class","buttonOff");
+            handle_current_data_complete();
+        }
+
+        function reset_current_sensors_btn(btn){
+            btn.setAttribute("class","buttonOff");
+            reset_current_sensors();
+        }
+
+        function reset_current_sensors(){
+            page_state.sensor_data_found = [false,false,false];
+            page_state.sensor_data = ["---","---","---"];
+            update_current_sensor();
         }
 
         function set_joy_theme(style){
@@ -367,7 +425,6 @@ R"=====(
         }
 
         function transmitter_button(button){
-                 console.log(button);
             if(page_state.reciever == true){
                 page_state.reciever = false;
                 set_joy_theme(0);

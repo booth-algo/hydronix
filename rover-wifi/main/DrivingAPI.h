@@ -103,7 +103,7 @@ struct Driving_system{
     motor_L.set_speed(l_speed);
     motor_R.set_speed(r_speed);
 
-    Serial.print("L and R speed: "); Serial.print(l_speed);Serial.print(" ");Serial.println(r_speed);
+    //Serial.print("L and R speed: "); Serial.print(l_speed);Serial.print(" ");Serial.println(r_speed);
   }
 
   void set(int speed,int direction){ // user speed input function

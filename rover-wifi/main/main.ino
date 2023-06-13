@@ -7,7 +7,7 @@
 
 // html page
 
-const char *SSID = "SHOUT DICKS FOR PASSWORD";
+const char *SSID = "SHOUT DUCKS FOR PASSWORD";
 const char *WIFI_PASSWORD = "1234567890";
 
 struct clientData{
@@ -26,11 +26,27 @@ class HydronixRover{
     motors(33, 32, 26, 25),
     buggyWebServer(handleClientData, getData, SSID, WIFI_PASSWORD), //can also use the other constructor (int, function, function, const char*, const char*) to set the polling rate
     clientState(0,0,false)
-  {}
+  {
+    for(int i = 0; i < 3; i++){
+      sensorDataNull.push_back(true);
+      sensorData.push_back("placeholder");
+    }
+  }
 
   void begin(){
     motors.begin();
     buggyWebServer.begin();
+
+    //TODO: remove following code, it's for testing only
+    sensorDataNull[0] = false;
+    sensorDataNull[1] = false;
+    sensorDataNull[2] = false;
+    String tmp = "43";
+    sensorData[0] = tmp;
+    tmp = "linus";
+    sensorData[1] = tmp;
+    tmp = "North";
+    sensorData[2] = tmp;
   }
 
   void loop(){
@@ -51,15 +67,33 @@ class HydronixRover{
 
   };
   
-  //TODO: this function should format sensor data
   std::function<String(void)> getData = [this](){
-    return R"===({"age":69,"name":"hello","Gender":"N"})===";
+
+    StaticJsonDocument<200> doc;
+    String output;
+    
+    std::vector<String> JSON_params;
+    JSON_params.push_back("Age");
+    JSON_params.push_back("Name");
+    JSON_params.push_back("Gender"); //there must be a better way than this
+
+    for(int i = 0; i < 3; i++){
+      if(!sensorDataNull[i]){
+        doc[JSON_params[i]] = sensorData[i]; 
+      }
+    }
+
+    serializeJson(doc, output);
+    return output;
   };
 
   Driving_system motors;
   webIO buggyWebServer;
 
   clientData clientState;
+
+  std::vector<String> sensorData;
+  std::vector<bool> sensorDataNull;
 };
 
 HydronixRover rover(SSID,WIFI_PASSWORD);

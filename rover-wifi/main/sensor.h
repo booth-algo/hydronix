@@ -34,16 +34,19 @@ public:
   }
 
   double age() {
+    double current_time;
     double last_time = 0;
+    double period;
     double sum = 0;
     int count = 0;
     double last_analog_value = 0;
+    double current_analog_value;
     while(count<100){
-      double current_analog_value = analogRead(age_pin);
+      current_analog_value = analogRead(age_pin);
       if(last_analog_value < 100 && current_analog_value >= 100){
-        double current_time = millis();
+        current_time = millis();
 
-        double period = current_time - last_time;
+        period = current_time - last_time;
         last_time = current_time;
         sum = sum + period;
         count++;

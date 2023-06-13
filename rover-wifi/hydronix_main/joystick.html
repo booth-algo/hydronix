@@ -2,149 +2,108 @@
 <html>
 
 <style>
-    table {
-      position: relative;
-      width:100%;
-      border-spacing: 0px;
+	:root {
+  		--light-black: #293241;
+  		--bold: #ee6c4d;
+  		--dark: #3D5A80;
+  		--bright: #98c1d9;
+  		--clear: #e0fbfc;
+	}
+	body{
+		background: var(--light-black);
+		font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif ;
+		color: var(--bright);
+		font-size: xx-large;
+        margin: 0px;
+        height: 100%;
+        width: 100%;
+        position: fixed;
+	}
+    button{
+        font-size: inherit;
+        background-color: var(--light-black);
+        border: none;
+        color: var(--bright);
+        margin: 5%;
+        border: solid;
+        border-width: 2px;
+        padding: 5%;
+        border-radius: 20px;
+        border-color: var(--clear);
     }
-    tr {
-      border: 1px solid white;
-      font-family: "Verdana", "Arial", sans-serif;
-      font-size: 20px;
+    .buttonOn{
+        border-color: var(--dark);
     }
-    th {
-      height: 20px;
-      padding: 3px 15px;
-      background-color: #343a40;
-      color: #FFFFFF !important;
-      }
-    td {
-      height: 20px;
-       padding: 3px 15px;
+    .buttonOff{
+        border-color: var(--clear);
     }
-    .tabledata {
-      font-size: 24px;
-      position: relative;
-      padding-left: 5px;
-      padding-top: 5px;
-      height:   25px;
-      border-radius: 5px;
-      color: #FFFFFF;
-      line-height: 20px;
-      transition: all 200ms ease-in-out;
-      background-color: #00AA00;
+    .title{
+        position: relative;
+        text-align: center;
+        font-size: xxx-large;
+        max-height: 15%;
+        border-bottom: solid;
+        border-color: var(--clear);
+        margin: 0;
+        padding: 1.5%;
     }
-    .fanrpmslider {
-      width: 30%;
-      height: 55px;
-      outline: none;
-      height: 25px;
+    .main{
+        position: relative;
+        display: grid;
+        margin-top: 0;
+        grid-template-columns: 30% 40% 30%;
+        height: 85%;
     }
-    .bodytext {
-      font-family: "Verdana", "Arial", sans-serif;
-      font-size: 24px;
-      text-align: left;
-      font-weight: light;
-      border-radius: 5px;
-      display:inline;
+    .ATtitle{
+        font-size: x-large;
+        width: 33.3%;
     }
-    .navbar {
-      width: 100%;
-      height: 50px;
-      margin: 0;
-      padding: 10px 0px;
-      background-color: #FFF;
-      color: #000000;
-      border-bottom: 5px solid #293578;
+    .curentReadingSaved{
+        background-color: var(--dark);
+        color: var(--bold);
+        outline: 1px;
     }
-    .fixed-top {
-      position: fixed;
-      top: 0;
-      right: 0;
-      left: 0;
-      z-index: 1030;
+    .curentReading{
+        color: var(--clear);
+        background-color: var(--dark);
+        outline: 1px;
     }
-    .navtitle {
-      float: left;
-      height: 50px;
-      font-family: "Verdana", "Arial", sans-serif;
-      font-size: 50px;
-      font-weight: bold;
-      line-height: 50px;
-      padding-left: 20px;
+    #alienData{
+        text-align: center;
+        top: 0;
+        height: 100%;
+        display: grid;
     }
-   .navheading {
-     position: fixed;
-     left: 60%;
-     height: 50px;
-     font-family: "Verdana", "Arial", sans-serif;
-     font-size: 20px;
-     font-weight: bold;
-     line-height: 20px;
-     padding-right: 20px;
-   }
-   .navdata {
-      justify-content: flex-end;
-      position: fixed;
-      left: 70%;
-      height: 50px;
-      font-family: "Verdana", "Arial", sans-serif;
-      font-size: 20px;
-      font-weight: bold;
-      line-height: 20px;
-      padding-right: 20px;
-   }
-    .category {
-      font-family: "Verdana", "Arial", sans-serif;
-      font-weight: bold;
-      font-size: 32px;
-      line-height: 50px;
-      padding: 20px 10px 0px 10px;
-      color: #000000;
+    #controlPannel{
+        display: grid;
+        column-count: 1;
+        height: 100%;
+        font-size: xx-large;
     }
-    .heading {
-      font-family: "Verdana", "Arial", sans-serif;
-      font-weight: normal;
-      font-size: 28px;
-      text-align: left;
-    }
-  
-    .btn {
-      background-color: #444444;
-      border: none;
-      color: white;
-      padding: 10px 20px;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 16px;
-      margin: 4px 2px;
-      cursor: pointer;
-    }
-    .foot {
-      font-family: "Verdana", "Arial", sans-serif;
-      font-size: 20px;
-      position: relative;
-      height:   30px;
-      text-align: center;   
-      color: #AAAAAA;
-      line-height: 20px;
-    }
-    .container {
-      max-width: 1800px;
-      margin: 0 auto;
-    }
-    table tr:first-child th:first-child {
-      border-top-left-radius: 5px;
-    }
-    table tr:first-child th:last-child {
-      border-top-right-radius: 5px;
-    }
-    table tr:last-child td:first-child {
-      border-bottom-left-radius: 5px;
-    }
-    table tr:last-child td:last-child {
-      border-bottom-right-radius: 5px;
+    #centreMain{
+        display: grid;
+        column-count: 1;
+        grid-template-rows: 30% 70%;
+        height: 100%;
+        align-content: centre;
+    }#canvas{
+        position: unset;
+    }#coordContainer{
+        position: relative;
+        top: 50%;
+        text-align: center; 
+    }#alienTable{
+        table-layout: fixed;
+        width: 100%;
+        height: 100%;
+        align-content: center;
+        outline:1px solid;
+        overflow-y: scroll;
+    }#sensorPause{
+        display: grid;
+        padding: 4%;
+        grid-template-columns: 33% 33% 33%;
+        font-size: large !important;
     }
 </style>
 
@@ -154,18 +113,85 @@
     </title>
     <meta name="viewport" content="user-scalable=no">
 </head>
-<body  style="position: fixed; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif ;
-color:rgb(128, 128, 128);
-font-size: xx-large;">
-    <h1 style="text-align:center">
-        Hydronix</h1>
-    <p style="text-align: center;">
-        X: <span id="x_coordinate"> </span>
-        Y: <span id="y_coordinate"> </span>
-        Speed: <span id="speed"> </span> %
-        Angle: <span id="angle"> </span>
-    </p>
-    <canvas id="canvas" name="game"></canvas>
+<body>
+    <h1 class="title" id="title">
+        Hydronix
+    </h1>
+    <div class="main">
+        <div id = "controlPannel">
+            <div id="sensorPause">
+                <button onpointerdown="lock_button(this,0)">Age</button>
+                <button onpointerdown="lock_button(this,1)">Name</button>
+                <button onpointerdown="lock_button(this,2)">Gender?</button>
+            </div>
+            <button onpointerdown="transmitter_button(this)">radio mode</button>
+            <button onclick="reset_page()", onpointerdown="this.setAttribute('class','buttonOn')" onpointerout="this.setAttribute('class','buttonOff')">reset</button>
+        </div>  
+        <div id = "alienData">
+            <table id="alienTable">
+                <tr>
+                    <th class="ATtitle">Age</th>
+                    <th class="ATtitle">Name</th>
+                    <th class="ATtitle">Gender?</th>
+                </tr>
+                <tr>
+                    <td class = "curentReading"> --- </td>
+                    <td class = "curentReading"> --- </td>
+                    <td class = "curentReading"> --- </td>
+                </tr>
+                <tr>
+                    <td class = "savedData"> --- </td>
+                    <td class = "savedData"> --- </td>
+                    <td class = "savedData"> --- </td>
+                </tr><tr>
+                    <td class = "savedData"> --- </td>
+                    <td class = "savedData"> --- </td>
+                    <td class = "savedData"> --- </td>
+                </tr><tr>
+                    <td class = "savedData"> --- </td>
+                    <td class = "savedData"> --- </td>
+                    <td class = "savedData"> --- </td>
+                </tr><tr>
+                    <td class = "savedData"> --- </td>
+                    <td class = "savedData"> --- </td>
+                    <td class = "savedData"> --- </td>
+                </tr><tr>
+                    <td class = "savedData"> --- </td>
+                    <td class = "savedData"> --- </td>
+                    <td class = "savedData"> --- </td>
+                </tr><tr>
+                    <td class = "savedData"> --- </td>
+                    <td class = "savedData"> --- </td>
+                    <td class = "savedData"> --- </td>
+                </tr><tr>
+                    <td class = "savedData"> --- </td>
+                    <td class = "savedData"> --- </td>
+                    <td class = "savedData"> --- </td>
+                </tr><tr>
+                    <td class = "savedData"> --- </td>
+                    <td class = "savedData"> --- </td>
+                    <td class = "savedData"> --- </td>
+                </tr><tr>
+                    <td class = "savedData"> --- </td>
+                    <td class = "savedData"> --- </td>
+                    <td class = "savedData"> --- </td>
+                </tr><tr>
+                    <td class = "savedData"> --- </td>
+                    <td class = "savedData"> --- </td>
+                    <td class = "savedData"> --- </td>
+                </tr>
+            </table>
+        </div>
+        <div id = "centreMain">
+            <p id = "coordContainer">
+                X: <span id="x_coordinate"> </span>
+                Y: <span id="y_coordinate"> </span>
+            </p>
+            <div>
+                <canvas id="canvas" name="game"></canvas>
+            </div>
+        </div>
+    </div>
     <script>
         // Adding websocket (port 81 is for ESP8266)
         var connection = new WebSocket('ws://' + "192.168.4.1" + ':81/', ['arduino']);
@@ -181,16 +207,22 @@ font-size: xx-large;">
         // Prints out message form from Arduino
         connection.onmessage = function (e) {
             console.log('Server: ', e.data);
+            send();
         };
         // Function to save joystick values
-        function send(x,y,speed,angle){
-            var data = {"x":x,"y":y,"speed":speed,"angle":angle};
+        function send(){
+            var data = page_state;
             data = JSON.stringify(data);
             console.log(data);
             connection.send(data);
         }
     </script>
     <script>
+		const LIGHT_BLACK = "#293241";
+  		const BOLD =  "#ee6c4d";
+  		const DARK =  "#3D5A80";
+  		const BRIGHT = "#98c1d9";
+  		const CLEAR = "#e0fbfc";
         var canvas, ctx;
 
         window.addEventListener('load', () => {
@@ -211,69 +243,212 @@ font-size: xx-large;">
 
             document.getElementById("x_coordinate").innerText = 0;
             document.getElementById("y_coordinate").innerText = 0;
-            document.getElementById("speed").innerText = 0;
-            document.getElementById("angle").innerText = 0;
         });
 
-
-
-
+        let touch_coord = { x: 0, y: 0 };
+        let paint = false;
         var width, height, radius, x_orig, y_orig;
+        var joy_colors = {
+            inner : BOLD,
+            outer : DARK,
+            outline : BRIGHT
+        };
+
+        var page_state = {
+            //send to esp32
+            joy_pos: [0,0],
+            reciever: false,
+            //determine what to store
+            curent_sensor_data: ["---","---","---"],
+            pause_sensor_data: [false, false, false],
+            sensor_data_found: [false, false, false],
+            sensor_table_data: []
+        };
+
+        for(let i = 0; i < 10; i++){
+            page_state.sensor_table_data[i] = ["---","---","---"];
+        }
+
+        function reset_page(){
+            page_state = {
+            //send to esp32
+            reciever: false,
+            //determine what to store
+            curent_sensor_data: ["---","---","---"],
+            sensor_data_found: [false, false, false],
+            pause_sensor_data: [false, false, false],
+            sensor_table_data: []
+            };
+
+            for(let i = 0; i < 10; i++){
+                page_state.sensor_table_data[i] = ["---","---","---"];
+            }
+            //reset physical page
+            let parent = document.getElementById("controlPannel");
+            let button_list = parent.getElementsByTagName("button");
+
+            for(let i = 0; i < button_list.length; i++){
+                button_list[i].setAttribute("class","buttonOff");
+            }
+
+            update_sensor_table();
+            update_curent_sensor();
+            for(let i = 0; i < 3; i++){
+                update_curent_sensor_color(i);
+            }
+            set_joy_theme(0);
+            resize();
+        }
+
+        function update_curent_sensor(){
+            let table = document.getElementById("alienTable");
+            let entries = table.getElementsByClassName("curentReading");
+            for(let i = 0; i < entries.length; i++){
+                entries[i].innerText = page_state.curent_sensor_data[i];
+            }
+        }
+
+        function update_sensor_table(){
+            let table = document.getElementById("alienTable");
+            let entries = table.getElementsByClassName("savedData");
+            for(let i = 0; i < entries.length; i++){
+                entries[i].innerText = page_state.sensor_table_data[Math.floor(i/3)] [i%3];
+            }
+        }
+
+        function update_curent_sensor_color(i){
+            let entries = document.getElementById("alienTable").getElementsByClassName("curentReading");
+            if(page_state.pause_sensor_data[i] == true){
+                entries[i].setAttribute("style","color: var(--light-black)");
+            }else if(page_state.sensor_data_found[i] == true){
+                entries[i].setAttribute("style","color: var(--bold)");
+            }else{
+                entries[i].setAttribute("style","color: var(--clear)");
+            }
+        }
+
+        function format_control_data(){
+            let output = {
+                "x" : page_state.pos[0],
+                "y" : page_state.pos[1],
+                "joystick" : page_state.reciever
+            };
+
+            return output
+        }
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~BUTTON BINDS~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+        function lock_button(button, button_index){ //TODO: complete function
+            if(page_state.pause_sensor_data[button_index] == false){
+                page_state.pause_sensor_data[button_index] = true;
+                button.setAttribute("class","buttonOn");
+            }else{
+                button.setAttribute("class","buttonOff");
+                page_state.pause_sensor_data[button_index] = false;
+            }
+            update_curent_sensor_color(button_index);
+        }
+
+        function set_joy_theme(style){
+            if(style == 0){
+                joy_colors.inner = BOLD;
+                joy_colors.outer = DARK;
+                joy_colors.outline = BRIGHT;
+            }else if(style == 1){
+                joy_colors.inner = LIGHT_BLACK;
+                joy_colors.outer = LIGHT_BLACK;
+                joy_colors.outline = DARK;
+            }
+        }
+
+        function transmitter_button(button){
+                 console.log(button);
+            if(page_state.reciever == true){
+                page_state.reciever = false;
+                set_joy_theme(0);
+                button.setAttribute("class","buttonOff");
+            }else{
+                page_state.reciever = true;
+                set_joy_theme(1);
+                button.setAttribute("class","buttonOn");
+            }
+            resize();
+        }
+
+//~~~~~~~~~~~~~~~~~~~~~~JOYSTICK CODE~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
         function resize() {
-            width = window.innerWidth;
+            width = canvas.parentElement.offsetWidth;
             radius = 100;
-            height = radius * 6.5;
-            ctx.canvas.width = width;
+            height = canvas.parentElement.offsetHeight;
+            x_orig = width / 2;
+            y_orig = height / 2;
+            ctx.canvas.width = width
             ctx.canvas.height = height;
             background();
-            joystick(width / 2, height / 3);
+            joystick(x_orig, y_orig);
         }
 
         function background() {
-            x_orig = width / 2;
-            y_orig = height / 3;
-
+            let r = radius * 1; //for tinkering - i like having it set to 1
             ctx.beginPath();
-            ctx.arc(x_orig, y_orig, radius + 30, 0, Math.PI * 2, true);
-            ctx.fillStyle = '#ECE5E5';
+            ctx.roundRect(x_orig-r, y_orig-r, r*2, r*2,r*0.1);
+            ctx.fillStyle = joy_colors.outer;
             ctx.fill();
+            ctx.strokeStyle = joy_colors.outline;
+            ctx.lineWidth = r * 0.02;
+			ctx.stroke();
         }
 
         function joystick(width, height) {
+			let r = radius * 0.3; //feel free to tweak
             ctx.beginPath();
-            ctx.arc(width, height, radius, 0, Math.PI * 2, true);
-            ctx.fillStyle = '#1F51FF';
+            ctx.arc(width, height, r, 0, Math.PI * 2, true);
+            ctx.fillStyle = joy_colors.inner;
             ctx.fill();
-            ctx.strokeStyle = '#89CFF0';
-            ctx.lineWidth = 10;
+            ctx.strokeStyle = joy_colors.outline;
+            ctx.lineWidth = r * 0.07;
             ctx.stroke();
         }
 
-        let coord = { x: 0, y: 0 };
-        let paint = false;
+        function coordsToOffset(c){
+          let x = c.x - x_orig;
+          let y = c.y - y_orig;
+          return { x: x,y: y};
+        }
+
+        function constrain(value, constraint){
+          if(value > constraint){
+            return constraint;
+          }
+          if(value < -constraint){
+            return -constraint;
+          }
+          return value;
+        }
 
         function getPosition(event) {
-            var mouse_x = event.clientX || event.touches[0].clientX;
-            var mouse_y = event.clientY || event.touches[0].clientY;
-            coord.x = mouse_x - canvas.offsetLeft;
-            coord.y = mouse_y - canvas.offsetTop;
+            let mouse_x = event.clientX || event.touches[0].clientX;
+            let mouse_y = event.clientY || event.touches[0].clientY;
+            touch_coord.x = mouse_x - canvas.offsetLeft;
+            touch_coord.y = mouse_y - (canvas.getBoundingClientRect().top);
         }
 
-        function is_it_in_the_circle() {
-            var current_radius = Math.sqrt(Math.pow(coord.x - x_orig, 2) + Math.pow(coord.y - y_orig, 2));
-            if (radius >= current_radius) return true
-            else return false
+        function on_joystick() {
+          let x_relative = touch_coord.x - x_orig;
+          let y_relative = touch_coord.y - y_orig;
+          if (x_relative < -100 || 100 < x_relative || y_relative < -100 || 100 < y_relative){
+            return false
+          }
+          return true;
         }
-
 
         function startDrawing(event) {
-            paint = true;
             getPosition(event);
-            if (is_it_in_the_circle()) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                background();
-                joystick(coord.x, coord.y);
-                Draw();
+            if (on_joystick()) {
+                paint = true;
+                Draw(event);
             }
         }
 
@@ -282,115 +457,35 @@ font-size: xx-large;">
             paint = false;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             background();
-            joystick(width / 2, height / 3);
+            joystick(x_orig, y_orig);
             document.getElementById("x_coordinate").innerText = 0;
             document.getElementById("y_coordinate").innerText = 0;
-            document.getElementById("speed").innerText = 0;
-            document.getElementById("angle").innerText = 0;
-
+            page_state.joy_pos = [0,0];
         }
 
         function Draw(event) {
 
-            if (paint) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                background();
-                var angle_in_degrees,x, y, speed;
-                var angle = Math.atan2((coord.y - y_orig), (coord.x - x_orig));
+            if (paint && !page_state.reciever) {
 
-                if (Math.sign(angle) == -1) {
-                    angle_in_degrees = Math.round(-angle * 180 / Math.PI);
-                }
-                else {
-                    angle_in_degrees =Math.round( 360 - angle * 180 / Math.PI);
-                }
-
-
-                if (is_it_in_the_circle()) {
-                    joystick(coord.x, coord.y);
-                    x = coord.x;
-                    y = coord.y;
-                }
-                else {
-                    x = radius * Math.cos(angle) + x_orig;
-                    y = radius * Math.sin(angle) + y_orig;
-                    joystick(x, y);
-                }
-
+				var x, y;
 
                 getPosition(event);
+                var touch_offset = coordsToOffset(touch_coord);
 
-                var speed =  Math.round(100 * Math.sqrt(Math.pow(x - x_orig, 2) + Math.pow(y - y_orig, 2)) / radius);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                background();
 
-                var x_relative = Math.round(x - x_orig);
-                var y_relative = Math.round(y - y_orig);
+                x = Math.round(constrain(touch_offset.x, radius));
+                y = Math.round(constrain(touch_offset.y, radius));
+                joystick(x + x_orig, y + y_orig);    
 
+                document.getElementById("x_coordinate").innerText =  x;
+                document.getElementById("y_coordinate").innerText = y;
 
-                document.getElementById("x_coordinate").innerText =  x_relative;
-                document.getElementById("y_coordinate").innerText =y_relative ;
-                document.getElementById("speed").innerText = speed;
-                document.getElementById("angle").innerText = angle_in_degrees;
-
-                send( x_relative,y_relative,speed,angle_in_degrees);
+                page_state.joy_pos = [x,y];
             }
         } 
     </script>
 </body>
 
-<body style="background-color: #efefef" onload="process()">
-  
-    <header>
-      <div class="navbar fixed-top">
-          <div class="container">
-            <div class="navtitle">Hydronix Rover</div>
-          </div>
-      </div>
-    </header>
-  
-    <main class="container" style="margin-top:70px">
-        <div class="bodytext">Motor Speed Control (RPM: <span id="fanrpm"></span>)</div>
-        <br>
-        <input type="range" class="fanrpmslider" min="0" max="255" value = "0" width = "0%" oninput="UpdateSlider(this.value)"/>
-        <br>
-        <div class="category">Sensor Readings</div>
-        <div style="border-radius: 10px !important;">
-        <table style="width:50%">
-        <colgroup>
-            <col span="1" style="background-color:rgb(230,230,230); width: 20%; color:#000000 ;">
-            <col span="1" style="background-color:rgb(200,200,200); width: 15%; color:#000000 ;">
-            <col span="1" style="background-color:rgb(180,180,180); width: 15%; color:#000000 ;">
-        </colgroup>
-        <col span="2"style="background-color:rgb(0,0,0); color:#FFFFFF">
-        <col span="2"style="background-color:rgb(0,0,0); color:#FFFFFF">
-        <col span="2"style="background-color:rgb(0,0,0); color:#FFFFFF">
-        <tr>
-            <th colspan="1"><div class="heading">Sensor</div></th>
-            <th colspan="1"><div class="heading">Bits</div></th>
-            <th colspan="1"><div class="heading">Volts</div></th>
-        </tr>
-        <tr>
-            <td><div class="bodytext">Name</div></td>
-            <td><div class="tabledata" id = "b0"></div></td>
-            <td><div class="tabledata" id = "v0"></div></td>
-        </tr>
-        <tr>
-            <td><div class="bodytext">Age</div></td>
-            <td><div class="tabledata" id = "b1"></div></td>
-            <td><div class="tabledata" id = "v1"></div></td>
-        </tr>
-            <tr>
-            <td><div class="bodytext">Magnetic Field</div></td>
-            <td><div class="tabledata" id = "switch"></div></td>
-        </tr>
-        </table>
-        </div>
-        <br>
-        <br>
-    </main>
-
-    <footer div class="foot" id = "temp">EEE Rover Hydronix™ 2023</div></footer>
-  
-</body>
-
-
-</html><br>
+</html>

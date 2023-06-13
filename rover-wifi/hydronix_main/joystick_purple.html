@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+
+<style>
+	:root {
+  		--light-black: #37306B;
+  		--bold: #ee6c4d;
+  		--dark: #66347F;
+  		--bright: #9E4784;
+  		--dark-white: #D27685;
+	}
+	body{
+		background: var(--light-black);
+		position: fixed; 
+		font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif ;
+		color: var(--dark-white);
+		font-size: xx-large;
+	}
+</style>
+
+<head>
+    <title>
+        Hydronix
+    </title>
+    <meta name="viewport" content="user-scalable=no">
+</head> 
+<body>
+    <h1 style="text-align:center">
+        Hydronix
+	</h1>
+    <p style="text-align: center;">
+        X: <span id="x_coordinate"> </span>
+        Y: <span id="y_coordinate"> </span>
+    </p>
+    <canvas id="canvas" name="game"></canvas>
+    <script>
+        // Adding websocket (port 81 is for ESP8266)
+        var connection = new WebSocket('ws://' + "192.168.4.1" + ':81/', ['arduino']);
+        // Sends date to Arduino (on connection)
+        connection.onopen = function () {
+            connection.send('Connect ' + new Date());
+        };
+        // Sends alert with error (on error)
+        connection.onerror = function (error) {
+            console.log('WebSocket Error ', error);
+            alert('WebSocket Error ', error);
+        };
+        // Prints out message form from Arduino
+        connection.onmessage = function (e) {
+            console.log('Server: ', e.data);
+        };
+        // Function to save joystick values
+        function send(x,y,speed,angle){
+            var data = {"x":x,"y":y};
+            data = JSON.stringify(data);
+            console.log(data);
+            connection.send(data);
+        }
+    </script>
+    <script>
+		const LIGHT_BLACK = "#37306B";
+  		const BOLD =  "#ee6c4d";
+  		const DARK =  "#66347F";
+  		const BRIGHT = "#9E4784";
+  		const CLEAR = "#D27685";
+        var canvas, ctx;
+
+        window.addEventListener('load', () => {
+
+            canvas = document.getElementById('canvas');
+            ctx = canvas.getContext('2d');          
+            resize(); 
+
+            document.addEventListener('mousedown', startDrawing);
+            document.addEventListener('mouseup', stopDrawing);
+            document.addEventListener('mousemove', Draw);
+
+            document.addEventListener('touchstart', startDrawing);
+            document.addEventListener('touchend', stopDrawing);
+            document.addEventListener('touchcancel', stopDrawing);
+            document.addEventListener('touchmove', Draw);
+            window.addEventListener('resize', resize);
+
+            document.getElementById("x_coordinate").innerText = 0;
+            document.getElementById("y_coordinate").innerText = 0;
+        });
+
+        let touch_coord = { x: 0, y: 0 };
+        let paint = false;
+        var width, height, radius, x_orig, y_orig;
+
+        function resize() {
+            width = window.innerWidth;
+            radius = 100;
+            height = radius * 6.5;
+            ctx.canvas.width = width;
+            ctx.canvas.height = height;
+            background();
+            joystick(width / 2, height / 3);
+        }
+
+        function background() {
+            x_orig = width / 2;
+            y_orig = height / 3;
+            let r = radius * 1; //for tinkering - i like having it set to 1
+
+            ctx.beginPath();
+            ctx.rect(x_orig-r, y_orig-r, r*2, r*2);
+            ctx.fillStyle = DARK;
+            ctx.fill();
+			ctx.strokeStyle = BRIGHT;
+            ctx.lineWidth = r * 0.02;
+			ctx.stroke();
+        }
+
+        function joystick(width, height) {
+			let r = radius * 0.3; //feel free to tweak
+            ctx.beginPath();
+            ctx.arc(width, height, r, 0, Math.PI * 2, true);
+            ctx.fillStyle = CLEAR;
+            ctx.fill();
+            ctx.strokeStyle = BRIGHT;
+            ctx.lineWidth = r * 0.07;
+            ctx.stroke();
+        }
+
+        function coordsToOffset(c){
+          let x = c.x - x_orig;
+          let y = c.y - y_orig;
+
+          return { x: x,y: y};
+        }
+
+        function constrain(value, constraint){
+          if(value > constraint){
+            return constraint;
+          }
+          if(value < -constraint){
+            return -constraint;
+          }
+          return value;
+        }
+
+        function getPosition(event) {
+            let mouse_x = event.clientX || event.touches[0].clientX;
+            let mouse_y = event.clientY || event.touches[0].clientY;
+            touch_coord.x = mouse_x - canvas.offsetLeft;
+            touch_coord.y = mouse_y - canvas.offsetTop;
+        }
+
+/* legacy code
+        function on_joystick() {
+          let x_relative = touch_coord.x - x_orig;
+          let y_relative = touch_coord.y - y_orig;
+          if (x_relative < -100 || 100 < x_relative || y_relative < -100 || 100 < y_relative){
+            return false
+          }
+          return true;
+        }
+*/
+
+        function startDrawing(event) {
+            paint = true;
+            getPosition(event);
+            if (on_joystick()) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                background();
+                joystick(touch_coord.x, touch_coord.y);
+                Draw();
+            }
+        }
+
+
+        function stopDrawing() {
+            paint = false;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            background();
+            joystick(width / 2, height / 3);
+            document.getElementById("x_coordinate").innerText = 0;
+            document.getElementById("y_coordinate").innerText = 0;
+        }
+
+        function Draw(event) {
+
+            if (paint) {
+
+				var x, y;
+
+                getPosition(event);
+                var touch_offset = coordsToOffset(touch_coord);
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                background();
+
+                x = Math.round(constrain(touch_offset.x, radius));
+                y = Math.round(constrain(touch_offset.y, radius));
+                joystick(x + x_orig, y + y_orig);    
+
+                document.getElementById("x_coordinate").innerText =  x;
+                document.getElementById("y_coordinate").innerText = y;
+
+                send(x, y);
+            }
+        } 
+    </script>
+</body>
+
+<body onload="process()">
+  
+    <header>
+      <div class="navbar fixed-top">
+          <div class="container">
+            <div class="navtitle">Hydronix Rover</div>
+          </div>
+      </div>
+    </header>
+  
+    <main class="container" style="margin-top:70px">
+        <div class="bodytext">Motor Speed Control (RPM: <span id="fanrpm"></span>)</div>
+        <br>
+        <input type="range" class="fanrpmslider" min="0" max="255" value = "0" width = "0%" oninput="UpdateSlider(this.value)"/>
+        <br>
+        <div class="category">Sensor Readings</div>
+        <div style="border-radius: 10px !important;">
+        <table style="width:50%">
+        <colgroup>
+            <col span="1" style="background-color:rgb(230,230,230); width: 20%; color:#000000 ;">
+            <col span="1" style="background-color:rgb(200,200,200); width: 15%; color:#000000 ;">
+            <col span="1" style="background-color:rgb(180,180,180); width: 15%; color:#000000 ;">
+        </colgroup>
+        <col span="2"style="background-color:rgb(0,0,0); color:#FFFFFF">
+        <col span="2"style="background-color:rgb(0,0,0); color:#FFFFFF">
+        <col span="2"style="background-color:rgb(0,0,0); color:#FFFFFF">
+        <tr>
+            <th colspan="1"><div class="heading">Sensor</div></th>
+            <th colspan="1"><div class="heading">Bits</div></th>
+            <th colspan="1"><div class="heading">Volts</div></th>
+        </tr>
+        <tr>
+            <td><div class="bodytext">Name</div></td>
+            <td><div class="tabledata" id = "b0"></div></td>
+            <td><div class="tabledata" id = "v0"></div></td>
+        </tr>
+        <tr>
+            <td><div class="bodytext">Age</div></td>
+            <td><div class="tabledata" id = "b1"></div></td>
+            <td><div class="tabledata" id = "v1"></div></td>
+        </tr>
+            <tr>
+            <td><div class="bodytext">Magnetic Field</div></td>
+            <td><div class="tabledata" id = "switch"></div></td>
+        </tr>
+        </table>
+        </div>
+        <br>
+        <br>
+    </main>
+
+    <footer div class="foot" id = "temp">EEE Rover Hydronix™ 2023</div></footer>
+  
+</body>
+
+
+</html><br>

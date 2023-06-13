@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+
+<style>
+	:root {
+  		--light-black: #293241;
+  		--bold: #ee6c4d;
+  		--dark: #3D5A80;
+  		--bright: #98c1d9;
+  		--clear: #e0fbfc;
+	}
+	body{
+		background: var(--light-black);
+		font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif ;
+		color: var(--clear);
+		font-size: xx-large;
+        margin: 0px;
+        height: 100%;
+	}
+    button{
+        font-size: xx-large;
+        background-color: var(--light-black);
+        border: none;
+        color: var(--clear);
+        margin: 15%;
+    }
+    .title{
+        position: relative;
+        text-align: center;
+        font-size: xxx-large;
+        height:9.7%;
+        margin: 0;
+    }
+    .underline{
+        position: relative;
+        height: 2px;
+        background: var(--clear);
+    }
+    .verticalline{
+        display: inline-block;
+        position: relative;
+        width: 0.3%;
+        height: 100%;
+        background: var(--clear);
+    }
+    .main{
+        display: grid;
+        margin-top: 0;
+        grid-template-columns: 35% 30% 35%;
+        height: 90%;
+    }
+    #alienData{
+        text-align: center;
+        top: 0;
+        height: 100%;
+    }
+    #controlPannel{
+        text-align: center;
+        display: grid;
+        column-count: 1;
+        height: 100%;
+    }
+    #centreMain{
+        display: inline-block;
+        height: 100%;
+        align-content: centre;
+    }#canvas{
+        position: unset;
+    }#coordContainer{
+        text-align: center;
+    }
+</style>
+
+<head>
+    <title>
+        Hydronix
+    </title>
+    <meta name="viewport" content="user-scalable=no">
+</head>
+<body>
+    <h1 class="title">
+        Hydronix
+    </h1>
+    <div class="underline"></div>
+    <div class="main">
+        <div id = "controlPannel">
+            <button>switch to transmitter</button>
+            <button>Another button</button>
+        </div>  
+        <div id = "alienData">hi</div>
+        <div id = "centreMain">
+            <p id = "coordContainer">
+                X: <span id="x_coordinate"> </span>
+                Y: <span id="y_coordinate"> </span>
+            </p>
+            <canvas id="canvas" name="game"></canvas>
+        </div>
+    </div>
+    <script>
+        // Adding websocket (port 81 is for ESP8266)
+        var connection = new WebSocket('ws://' + "192.168.4.1" + ':81/', ['arduino']);
+        // Sends date to Arduino (on connection)
+        connection.onopen = function () {
+            connection.send('Connect ' + new Date());
+        };
+        // Sends alert with error (on error)
+        connection.onerror = function (error) {
+            console.log('WebSocket Error ', error);
+            alert('WebSocket Error ', error);
+        };
+        // Prints out message form from Arduino
+        connection.onmessage = function (e) {
+            console.log('Server: ', e.data);
+        };
+        // Function to save joystick values
+        function send(x,y,speed,angle){
+            var data = {"x":x,"y":y};
+            data = JSON.stringify(data);
+            console.log(data);
+            connection.send(data);
+        }
+    </script>
+    <script>
+		const LIGHT_BLACK = "#293241";
+  		const BOLD =  "#ee6c4d";
+  		const DARK =  "#3D5A80";
+  		const BRIGHT = "#98c1d9";
+  		const CLEAR = "#e0fbfc";
+        var canvas, ctx;
+
+        window.addEventListener('load', () => {
+
+            canvas = document.getElementById('canvas');
+            ctx = canvas.getContext('2d');          
+            resize(); 
+
+            document.addEventListener('mousedown', startDrawing);
+            document.addEventListener('mouseup', stopDrawing);
+            document.addEventListener('mousemove', Draw);
+
+            document.addEventListener('touchstart', startDrawing);
+            document.addEventListener('touchend', stopDrawing);
+            document.addEventListener('touchcancel', stopDrawing);
+            document.addEventListener('touchmove', Draw);
+            window.addEventListener('resize', resize);
+
+            document.getElementById("x_coordinate").innerText = 0;
+            document.getElementById("y_coordinate").innerText = 0;
+        });
+
+        let touch_coord = { x: 0, y: 0 };
+        let joystick_coord = { x: 0, y: 0 };
+        let paint = false;
+        var width, height, radius, x_orig, y_orig;
+
+        function resize() {
+            width = canvas.parentElement.offsetWidth;
+            radius = 100;
+            height = parent.innerHeight;
+            ctx.canvas.width = width
+            ctx.canvas.height = height;
+            background();
+            joystick(width / 2, height / 3);
+        }
+
+        function background() {
+            x_orig = width / 2;
+            y_orig = height / 3;
+            let r = radius * 1; //for tinkering - i like having it set to 1
+            ctx.beginPath();
+            ctx.rect(x_orig-r, y_orig-r, r*2, r*2);
+            ctx.fillStyle = DARK;
+            ctx.fill();
+			ctx.strokeStyle = CLEAR;
+            ctx.lineWidth = r * 0.02;
+			ctx.stroke();
+        }
+
+        function joystick(width, height) {
+			let r = radius * 0.3; //feel free to tweak
+            ctx.beginPath();
+            ctx.arc(width, height, r, 0, Math.PI * 2, true);
+            ctx.fillStyle = BOLD;
+            ctx.fill();
+            ctx.strokeStyle = CLEAR;
+            ctx.lineWidth = r * 0.07;
+            ctx.stroke();
+        }
+
+        function coordsToOffset(c){
+          let x = c.x - x_orig;
+          let y = c.y - y_orig;
+          return { x: x,y: y};
+        }
+
+        function constrain(value, constraint){
+          if(value > constraint){
+            return constraint;
+          }
+          if(value < -constraint){
+            return -constraint;
+          }
+          return value;
+        }
+
+        function getPosition(event) {
+            let mouse_x = event.clientX || event.touches[0].clientX;
+            let mouse_y = event.clientY || event.touches[0].clientY;
+            touch_coord.x = mouse_x - canvas.offsetLeft;
+            touch_coord.y = mouse_y - canvas.offsetTop;
+        }
+
+        function on_joystick() {
+          let x_relative = touch_coord.x - x_orig;
+          let y_relative = touch_coord.y - y_orig;
+          if (x_relative < -100 || 100 < x_relative || y_relative < -100 || 100 < y_relative){
+            return false
+          }
+          return true;
+        }
+
+        function startDrawing(event) {
+            getPosition(event);
+            if (on_joystick()) {
+                paint = true;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                background();
+                joystick(touch_coord.x, touch_coord.y);
+                Draw(event);
+            }
+        }
+
+
+        function stopDrawing() {
+            paint = false;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            background();
+            joystick(width / 2, height / 3);
+            document.getElementById("x_coordinate").innerText = 0;
+            document.getElementById("y_coordinate").innerText = 0;
+        }
+
+        function Draw(event) {
+
+            if (paint) {
+
+				var x, y;
+
+                getPosition(event);
+                var touch_offset = coordsToOffset(touch_coord);
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                background();
+
+                x = Math.round(constrain(touch_offset.x, radius));
+                y = Math.round(constrain(touch_offset.y, radius));
+                joystick(x + x_orig, y + y_orig);    
+
+                document.getElementById("x_coordinate").innerText =  x;
+                document.getElementById("y_coordinate").innerText = y;
+
+                joystick_coord = {x:x, y:y};
+                //send(x, y);
+            }
+        } 
+    </script>
+</body>
+
+</html>

@@ -230,9 +230,9 @@
                 console.log("opening new socket");
                 connection = new WebSocket(`ws://${window.location.hostname}:81`, ['arduino']);
             }
-            connection.send(JSON.stringify(data));
-            
+            connection.send(JSON.stringify(data)); 
         }
+	    
     </script>
     <script>
 		const LIGHT_BLACK = "#293241";

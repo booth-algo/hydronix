@@ -27,6 +27,7 @@ private: //i'd prefer not using global variables if possible - could get messy.
   RC_state state;
 };
 
+also look at the radio sensor code - this must use a diferent uart channel
 thanks, alex.
 */
 

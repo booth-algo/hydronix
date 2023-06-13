@@ -62,10 +62,8 @@ private:
     server.send(200, "text/html", webpageCode);
   };
 
-  std::function<void(uint8_t num, WStype_t type, uint8_t *payload,
-                     size_t welength)>
-      webSocketEvent = [this](uint8_t num, WStype_t type, uint8_t *payload,
-                              size_t welength) {
+  std::function<void(uint8_t num, WStype_t type, uint8_t *payload, size_t welength)>
+      webSocketEvent = [this](uint8_t num, WStype_t type, uint8_t *payload, size_t welength) {
         String payloadString = (const char *)payload;
 
         if(type = WStype_TEXT){

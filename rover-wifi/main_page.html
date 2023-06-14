@@ -128,7 +128,7 @@
                 <button onpointerdown="this.setAttribute('class','buttonOn')" onpointerout="this.setAttribute('class','buttonOff')" onclick="save_readings(this)">Save Readings</button>
             </div>
             <button onpointerdown="transmitter_button(this)">Radio Mode</button>
-            <button onclick="reset_page()", onpointerdown="this.setAttribute('class','buttonOn')" onpointerout="this.setAttribute('class','buttonOff')">Reset</button>
+            <button onclick="reset_page_btn()", onpointerdown="this.setAttribute('class','buttonOn')" onpointerout="this.setAttribute('class','buttonOff')">Reset</button>
         </div>  
         <div id = "alienData">
             <table id="alienTable">
@@ -367,6 +367,12 @@
             }else if(page_state.sensor_data_found[i] == true){
                 entries[i].setAttribute("style","color: var(--bold)");
             }else{
+
+            	if(i == 2 && page_state.sensor_data_found[0] == true && page_state.sensor_data_found[1] == true){
+                		ntries[i].setAttribute("style","color: var(--bold)");
+            		return
+            	}
+
                 entries[i].setAttribute("style","color: var(--clear)");
             }
         }
@@ -395,6 +401,12 @@
             update_current_sensor_color(button_index);
         }
 */
+		
+		function reset_page_btn(){
+            if(confirm("are you sure you want to reset, all stored sensor readings will be lost")){
+           		reset_page();
+            }
+        }
 
         function save_readings(btn){
             btn.setAttribute("class","buttonOff");

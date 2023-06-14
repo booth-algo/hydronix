@@ -75,6 +75,8 @@ public:
   }
   
   std::vector<sensor_reading_t> read_sensors(){
+    std::vector<sensor_reading_t> output;
+    output.push_back(age.read());
     //get all sensor readings. perhaps using a normal pointer array that is 3 long is a better idea here than std::vector as it is less overhed. feel free to use either, just remember to remove the include if you do
   }
   

@@ -311,9 +311,11 @@ R"=====(
 
         function update_current_sensor_state(index, value){
 
+            /*
             if (page_state.sensor_data_found[index]){
                 return;
             }
+            */
 
             if (value != null){
                 page_state.sensor_data[index] = value;
@@ -323,7 +325,7 @@ R"=====(
 
         function handle_current_data_complete(){
 
-            for(i = 0; i < page_state.sensor_data_found.length; i++){
+            for(i = 0; i < page_state.sensor_data_found.length - 1; i++){
                 if (!page_state.sensor_data_found[i]){
                     console.log("incomplete set");
                     return;

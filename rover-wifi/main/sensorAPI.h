@@ -30,7 +30,7 @@ public:
   
   //feel free to add a destructor if you deem it necesary (although it probably isnt)
   
-  void setup(){ //put all the code that you would put in you're constructor here. this will be called once
+  void begin(){ //put all the code that you would put in you're constructor here. this will be called once
     //perhaps setup an interrupt if needed using: attachInterrupt(GPIOPin, ISR, Mode);
   }
   

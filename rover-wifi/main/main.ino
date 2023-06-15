@@ -88,7 +88,7 @@ class HydronixRover{
   };
 
   Driving_system motors;
-  webIO buggyWebServer;
+  Web_IO buggyWebServer;
 
   clientData clientState;
 

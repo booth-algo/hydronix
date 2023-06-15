@@ -13,16 +13,16 @@ struct sensor_reading_t{
   bool valid;
 }
 
-class sensor { //the clas for each sensor (pls dont actually call ur class sensor -> see sensors class attributes for example names)
+class Sensor { //the clas for each sensor (pls dont actually call ur class sensor -> see sensors class attributes for example names)
   
 public:
   
-  sensor(int pin):
+  Sensor(int pin):
     pin_no(pin), //example of formating for constructor initialiser list
     reading("blah","",false) //idk if the default construct or sensor_readig_t works like this
   {} //avoid putting code in the constructor where possible (as you cant control which order they will be called in -> important as a lot of arduino interfaces may not have been initialised yet)
 
-  sensor():
+  Sensor():
     sensor(7) //not necessary, but having a constructr that takes no arguments and uses default parameters is a nice toutch
   {}
   
@@ -52,11 +52,11 @@ private:
   sensor_reading_t reading; //idk if thats the best name for this variable, feel free to change it (would be nice to keep it consistent accross the 3 sensor classes though)
 };
 
-class sensors{ //combine all snesor classes together
+class Sensors{ //combine all snesor classes together
 
 public:
   
-  sensors(): //add a destructor too if needed (its probably not, but freeing up pins is probably good practice)
+  Sensors(): //add a destructor too if needed (its probably not, but freeing up pins is probably good practice)
     age(),
     name(),
     polarity()

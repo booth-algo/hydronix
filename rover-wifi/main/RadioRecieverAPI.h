@@ -44,7 +44,7 @@ void print_state (RC_state state){ //debuging code should not be in the class de
   }
 }
 
-  void get_state(int x_channel, int y_channel, int failsafe_channel){ //i can implement the function pointers for you if you wish. do you want this function to be loop()? 
+  void get_state(int x_channel, int y_channel, int failsafe_channel){ //i can implement the function pointers for you if you wish. do you want this function to be loop()? it also looks like these parameters should be defined in member data
     
     rxFrameDone = false;
 
@@ -103,9 +103,9 @@ void print_state (RC_state state){ //debuging code should not be in the class de
     }
   }
 
-RC_state state;
-
 private:
+
+  RC_state state; //moved this to private
   
 };
 

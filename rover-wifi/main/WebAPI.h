@@ -10,7 +10,7 @@
 
 #include "HTML.h"
 
-class webIO {
+class Web_IO {
 public:
   webIO(int polling_interval, std::function<void(String)> handleClientData,std::function<String(void)> getData, const char *SSID, const char *WIFI_PASSWORD) : 
     SSID(SSID),

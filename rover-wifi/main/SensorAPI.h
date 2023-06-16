@@ -12,10 +12,10 @@ public:
     String name = "";
     int count = 0;
     bool start = 0;
-    int start_time = micros();
-    int timeout = 1000;
+    int start_time = millis();
+    int timeout = 100;
 
-    while (count < 4 && (micros()-start_time < timeout)) {
+    while (count < 4 && (millis()-start_time < timeout)) {
       if(Serial2.available()){
         char inByte = Serial2.read();
         

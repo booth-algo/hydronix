@@ -69,10 +69,6 @@ struct Driving_system{
     direction(0)
   {}
 
-  Driving_system():
-    Driving_system(33, 32, 26, 25)
-  {}
-
   void begin(){ // must be called in setup
     motor_L.begin();
     motor_R.begin();
@@ -104,9 +100,6 @@ struct Driving_system{
       r_speed = -255;
     }
 
-    Serial.print("L speed:"); Serial.println(l_speed);
-    Serial.print("R speed:"); Serial.println(r_speed);
-
     motor_L.set_speed(l_speed);
     motor_R.set_speed(r_speed);
 
@@ -117,7 +110,7 @@ struct Driving_system{
 
     double tmp = (speed * 255) / 100;
     speed = tmp;
-    tmp = ((direction * 2 * 255) / 100);
+    tmp = (direction * 2 * 255) / 100;
     direction = tmp;
     set_pwm_diff(speed,direction);
 

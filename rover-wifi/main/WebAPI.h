@@ -10,7 +10,7 @@
 
 #include "HTML.h"
 
-class Web_IO {
+class webIO {
 public:
   webIO(int polling_interval, std::function<void(String)> handleClientData,std::function<String(void)> getData, const char *SSID, const char *WIFI_PASSWORD) : 
     SSID(SSID),
@@ -65,7 +65,8 @@ private:
   };
 
   std::function<void(uint8_t num, WStype_t type, uint8_t *payload, size_t welength)>
-      webSocketEvent = [this](uint8_t num, WStype_t type, uint8_t *payload, size_t welength) {
+      webSocketEvent = [this](uint8_t num, WStype_t type, uint8_t *payload,
+                              size_t welength) {
         waiting = false;
         String payloadString = (const char *)payload;
 

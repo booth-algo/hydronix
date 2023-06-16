@@ -56,7 +56,7 @@ public:
       last_value = current_value;
     }
 
-    return String(sum/100,0);
+    return String(sum/90,0);
   }
 
   String magnetic(){ 

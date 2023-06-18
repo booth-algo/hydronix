@@ -2,7 +2,7 @@
 V2.1 uses the new more powerful power management IC and esp32
 - improved steering
 uses pwm channels 0 - 3
-Developed by Alex Charlton*/
+Developed by Alex Charlton with the help of Bruno Duaso*/
 
 #ifndef DrivingSystem
 #define DrivingSystem
@@ -74,36 +74,68 @@ struct Driving_system{
     motor_R.begin();
   }
 
-  void set_pwm_diff(int speed,int direction){ // sets the speed and directin by ading a diferential to the set speed to each motor
+  double get_speed (int x, int y){
+    double speed;
+    speed = sqrt(x^2 + y^2);
+    speed = (speed * 255)/100;
+    if(speed >= 255){
+        return 255;
+    }
+    return speed;
+}
 
-    direction = direction / 2;
-    int l_speed = speed + direction;
-    int r_speed = speed - direction;
+  void set_pwm_diff(int speed_alex,int direction){ // sets the speed and directin by ading a diferential to the set speed to each motor
+    int x = direction;
+    int y = speed_alex;
+    double tmp = get_speed(x, y);
+    int speed = tmp;
+    int lMotor = 0;
+    int rMotor = 0;
 
-    if(abs(l_speed) + abs(r_speed) > 510){ //input out of range
-      return;
+    if((x<=25)&&(x>=-25)){
+        if((y<=25)&&(y>=-25)){
+            //stand still
+        }else{
+            //rotate
+            if(x>0){
+                rMotor = -speed;
+                lMotor = speed;
+            }else{
+                rMotor = speed;
+                lMotor = -speed;
+            }
+        }
+    }else{
+        //move fowards/backwards
+        if(x>0){
+            if(y>0){
+                //first quadrant
+                lMotor = speed;
+                rMotor = (1-x/200)*speed; //same as doing (100-(x/2))/100 times speed   -> x/2 is an arbitrary value, we can also try 2x/3 or others
+            }else{
+                //fourth quadrant
+                lMotor = -speed;
+                rMotor = -(1-x/200)*speed;
+            }
+        }else{
+            if(y>0){
+                //second quadrant
+                lMotor = (1+x/200)*speed;
+                rMotor = speed;
+            }else{
+                //third quadrant
+                lMotor = -(1+x/200)*speed;
+                rMotor = -speed;
+            }
+        
+        }
+
     }
 
-    if(l_speed > 255){
-      r_speed -= l_speed - 255;
-      l_speed = 255;
-    }else if(r_speed > 255){
-      l_speed -= r_speed - 255;
-      r_speed = 255;
-    }
+    motor_L.set_speed(lMotor);
+    motor_R.set_speed(rMotor);
 
-    if(l_speed < -255){
-      r_speed -= l_speed + 255;
-      l_speed = -255;
-    }else if(r_speed < - 255){
-      l_speed -= r_speed + 255;
-      r_speed = -255;
-    }
-
-    motor_L.set_speed(l_speed);
-    motor_R.set_speed(r_speed);
-
-    Serial.print("L and R speed: "); Serial.print(l_speed);Serial.print(" ");Serial.println(r_speed);
+    Serial.print("L and R speed: "); Serial.print(lMotor);Serial.print(" ");Serial.println(rMotor);
   }
 
   void set(int speed,int direction){ // user speed input function

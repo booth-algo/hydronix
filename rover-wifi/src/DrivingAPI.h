@@ -2,7 +2,7 @@
 V2.1 uses the new more powerful power management IC and esp32
 - improved steering
 uses pwm channels 0 - 3
-Developed by Alex Charlton*/
+Developed by Alex Charlton and Bruno Duaso*/
 
 #ifndef DrivingSystem
 #define DrivingSystem
@@ -78,6 +78,18 @@ struct Driving_system{
     motor_R.begin();
   }
 
+/*
+  double mag_then_ceil (int x, int y){
+    double speed;
+    speed = sqrt(x^2 + y^2);
+    speed = (speed * 255)/100;
+    if(speed >= 255){
+        return 255;
+    }
+    return speed;
+  }
+*/
+
   void set_pwm_diff(int speed,int direction){ // sets the speed and directin by ading a diferential to the set speed to each motor
 
     direction = direction / 2;
@@ -113,13 +125,22 @@ struct Driving_system{
     //Serial.print("L and R speed: "); Serial.print(l_speed);Serial.print(" ");Serial.println(r_speed);
   }
 
+  void handle_joystick_zones(int y,int x){ // sets the speed and directin by ading a diferential to the set speed to each motor
+
+    if((x<=25)&&(x>=-25)){
+      set_pwm_diff(y,x);
+    }else{
+      set_pwm_diff(y,x/2);   
+    }
+  }  
+
   void set(int speed,int direction){ // user speed input function
 
     double tmp = (speed * 255) / 100;
     speed = tmp;
     tmp = ((direction * 2 * 255) / 100);
     direction = tmp;
-    set_pwm_diff(speed,direction);
+    handle_joystick_zones(speed,direction);
 
   }
 

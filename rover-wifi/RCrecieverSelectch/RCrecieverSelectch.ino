@@ -84,6 +84,15 @@ void print_state (RC_state state){
          if(failsafe_channel == i+1){
           state.failsafe = map(rcValue[i], 1000, 2000, 1000, 2000);
         }
+        double tmp;
+
+        //maps it from 100, to -100
+        tmp = state.failsafe/5 - 300;
+        state.x = tmp;
+        tmp = state.failsafe/5 - 300;
+        state.y = tmp;
+        tmp = state.failsafe/5 - 300;
+        state.failsafe = tmp;
 
       }
       print_state(state);

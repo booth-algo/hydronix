@@ -12,7 +12,7 @@
 
 class Web_IO {
 public:
-  webIO(int polling_interval, std::function<void(String)> handleClientData,std::function<String(void)> getData, const char *SSID, const char *WIFI_PASSWORD) : 
+  Web_IO(int polling_interval, std::function<void(String)> handleClientData,std::function<String(void)> getData, const char *SSID, const char *WIFI_PASSWORD) : 
     SSID(SSID),
     WIFI_PASSWORD(WIFI_PASSWORD),
     server(80), 
@@ -24,8 +24,8 @@ public:
     getData(getData)
   {}
 
-  webIO(std::function<void(String)> handleClientData, std::function<String(void)> getData, const char *SSID, const char *WIFI_PASSWORD):
-    webIO(500,handleClientData,getData, SSID, WIFI_PASSWORD)
+  Web_IO(std::function<void(String)> handleClientData, std::function<String(void)> getData, const char *SSID, const char *WIFI_PASSWORD):
+    Web_IO(500,handleClientData,getData, SSID, WIFI_PASSWORD)
   {}
 
   void begin() {

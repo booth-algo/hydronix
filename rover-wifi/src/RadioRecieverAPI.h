@@ -20,7 +20,7 @@ struct RC_state{
 class RC {
 public:
   RC():
-    state{0,0,0}
+    state()
   {} 
   
 void print_state (RC_state state){ //debuging code should not be in the class definiton. (not really an issue)
@@ -78,13 +78,13 @@ void print_state (RC_state state){ //debuging code should not be in the class de
         
         for (int i = 0; i < IBUS_MAXCHANNELS; i++){
           if(x_channel == i+1){
-            RC_state.x = map(rcValue[i], 1000, 2000, 1000, 2000);
+            state.x = map(rcValue[i], 1000, 2000, 1000, 2000);
           }
           if(y_channel == i+1){
-            RC_state.y = map(rcValue[i], 1000, 2000, 1000, 2000);
+            state.y = map(rcValue[i], 1000, 2000, 1000, 2000);
           }
            if(failsafe_channel == i+1){
-            RC_state.failsafe = map(rcValue[i], 1000, 2000, 1000, 2000);
+            state.failsafe = map(rcValue[i], 1000, 2000, 1000, 2000);
           }
   
         }

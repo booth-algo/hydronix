@@ -4,6 +4,8 @@
 // custom scripts
 #include "DrivingAPI.h"
 #include "WebAPI.h"
+#include "RadioRecieverAPI.h"
+#include "SensorsAPI.h"
 
 // html page
 
@@ -28,25 +30,13 @@ class HydronixRover{
     clientState(0,0,false)
   {
     for(int i = 0; i < 3; i++){
-      sensorDataNull.push_back(true);
-      sensorData.push_back("placeholder");
+      sensorData.push_back(sensor_t("---",false));
     }
   }
 
   void begin(){
     motors.begin();
     buggyWebServer.begin();
-
-    //TODO: remove following code, it's for testing only
-    sensorDataNull[0] = false;
-    sensorDataNull[1] = false;
-    sensorDataNull[2] = false;
-    String tmp = "43";
-    sensorData[0] = tmp;
-    tmp = "linus";
-    sensorData[1] = tmp;
-    tmp = "North";
-    sensorData[2] = tmp;
   }
 
   void loop(){
@@ -78,8 +68,8 @@ class HydronixRover{
     JSON_params.push_back("Gender"); //there must be a better way than this
 
     for(int i = 0; i < 3; i++){
-      if(!sensorDataNull[i]){
-        doc[JSON_params[i]] = sensorData[i]; 
+      if(sensorData[i].valid){
+        doc[JSON_params[i]] = sensorData[i].reading; 
       }
     }
 
@@ -88,12 +78,11 @@ class HydronixRover{
   };
 
   Driving_system motors;
-  webIO buggyWebServer;
+  Web_IO buggyWebServer;
 
   clientData clientState;
 
-  std::vector<String> sensorData;
-  std::vector<bool> sensorDataNull;
+  std::vector<sensor_t> sensorData;
 };
 
 HydronixRover rover(SSID,WIFI_PASSWORD);

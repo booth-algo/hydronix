@@ -351,6 +351,7 @@ R"=====(
             let entries = table.getElementsByClassName("currentReading");
             for(let i = 0; i < entries.length; i++){
                 entries[i].innerText = page_state.sensor_data[i];
+                update_current_sensor_color(i);
             }
         }
 
@@ -359,7 +360,6 @@ R"=====(
             let entries = table.getElementsByClassName("savedData");
             for(let i = 0; i < entries.length; i++){
                 entries[i].innerText = page_state.sensor_table_data[Math.floor(i/3)] [i%3];
-                update_current_sensor_color(i);
             }
         }
 
@@ -372,7 +372,7 @@ R"=====(
             }else{
 
             	if(i == 2 && page_state.sensor_data_found[0] == true && page_state.sensor_data_found[1] == true){
-                		ntries[i].setAttribute("style","color: var(--bold)");
+                		entries[i].setAttribute("style","color: var(--bold)");
             		return
             	}
 
@@ -583,5 +583,4 @@ R"=====(
 </body>
 
 </html>
-
 )=====";

@@ -130,7 +130,7 @@ R"=====(
                 <button onpointerdown="this.setAttribute('class','buttonOn')" onpointerout="this.setAttribute('class','buttonOff')" onclick="save_readings(this)">Save Readings</button>
             </div>
             <button onpointerdown="transmitter_button(this)">Radio Mode</button>
-            <button onclick="reset_page_btn()", onpointerdown="this.setAttribute('class','buttonOn')" onpointerout="this.setAttribute('class','buttonOff')">Reset</button>
+            <button onclick="reset_page_btn()", onpointerdown="reset_page_btn_dwn(this)" onpointerout="reset_page_btn_up(this)">Reset</button>
         </div>  
         <div id = "alienData">
             <table id="alienTable">
@@ -359,6 +359,7 @@ R"=====(
             let entries = table.getElementsByClassName("savedData");
             for(let i = 0; i < entries.length; i++){
                 entries[i].innerText = page_state.sensor_table_data[Math.floor(i/3)] [i%3];
+                update_current_sensor_color(i);
             }
         }
 
@@ -408,6 +409,24 @@ R"=====(
             if(confirm("are you sure you want to reset, all stored sensor readings will be lost")){
            		reset_page();
             }
+        }
+
+        function reset_page_btn_dwn(btn){
+            btn.setAttribute('class','buttonOn');
+
+            for(let i = 0; i < 3; i++){
+                update_current_sensor_color(i,true);
+            }
+            
+        }
+
+        function reset_page_btn_up(btn){
+            btn.setAttribute('class','buttonOff');
+
+            for(let i = 0; i < 3; i++){
+                update_current_sensor_color(i);
+            }
+            
         }
 
         function save_readings(btn){
@@ -564,4 +583,5 @@ R"=====(
 </body>
 
 </html>
+
 )=====";

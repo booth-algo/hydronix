@@ -1,5 +1,6 @@
 #include <string.h>
 #include <ESP32Servo.h>
+#include <functional>
 
 #define IBUS_BUFFSIZE 32    
 #define IBUS_MAXCHANNELS 10
@@ -16,23 +17,29 @@ struct RC_state{
   int y;
   int failsafe;
 };
-
+ 
 class RC {
 public:
-  RC():
+  RC(int x_channel, int y_channel, int failsafe_channel, std::function<void(RC_state)> handle_new_RX_reading) :
+    handle_new_RX_reading(handle_new_RX_reading),
+    x_channel(x_channel),
+    y_channel(y_channel),
+    failsafe_channel(failsafe_channel),
+    ibusIndex(0),
     state()
   {} 
+
+  RC(std::function<void(RC_state)> handle_new_RX_reading): RC(1,3,7,handle_new_RX_reading) {}
   
 void print_state (RC_state state){ //debuging code should not be in the class definiton. (not really an issue)
 
   if (Serial.available())
   {
-
     Serial.print(state.x);
         Serial.print("     ");
         Serial.print(state.y);
         Serial.print("     ");
-        if(state.failsafe > 950){
+        if(state.failsafe > 950/5 - 300){
           Serial.print("Connected -> ");
           Serial.print(state.failsafe);
           Serial.println("     ");
@@ -44,9 +51,7 @@ void print_state (RC_state state){ //debuging code should not be in the class de
   }
 }
 
-  void get_state(int x_channel, int y_channel, int failsafe_channel){ //i can implement the function pointers for you if you wish. do you want this function to be loop()? it also looks like these parameters should be defined in member data
-    
-    rxFrameDone = false;
+  void loop(){ //i can implement the function pointers for you if you wish. do you want this function to be loop()? it also looks like these parameters should be defined in member data
 
     if (Serial.available())
     {
@@ -78,22 +83,19 @@ void print_state (RC_state state){ //debuging code should not be in the class de
         
         for (int i = 0; i < IBUS_MAXCHANNELS; i++){
           if(x_channel == i+1){
-            state.x = map(rcValue[i], 1000, 2000, 1000, 2000);
+            state.x = map(rcValue[i], 1000, 2000, 1000, 2000)/5 - 300;
           }
           if(y_channel == i+1){
-            state.y = map(rcValue[i], 1000, 2000, 1000, 2000);
+            state.y = map(rcValue[i], 1000, 2000, 1000, 2000)/5 - 300;
           }
            if(failsafe_channel == i+1){
-            state.failsafe = map(rcValue[i], 1000, 2000, 1000, 2000);
+            state.failsafe = map(rcValue[i], 1000, 2000, 1000, 2000)/5 - 300;
           }
-  
         }
         print_state(state);
 
-      //to use the state, you need to call a function from here
+        handle_new_RX_reading(state);
 
-      rxFrameDone = true;
-      return;
       }
       else
       {
@@ -105,6 +107,15 @@ void print_state (RC_state state){ //debuging code should not be in the class de
 
 private:
 
+  uint8_t ibusIndex; 
+  uint8_t ibus[IBUS_BUFFSIZE];
+  uint16_t rcValue[IBUS_MAXCHANNELS];
+
+  std::function<void(RC_state)> handle_new_RX_reading;
+
+  int x_channel;
+  int y_channel;
+  int failsafe_channel;
   RC_state state; //moved this to private
   
 };

@@ -25,6 +25,7 @@ class HydronixRover{
   public:
 
   HydronixRover(const char *SSID, const char *WIFI_PASSWORD):
+    radioControl(handleRCData),
     joystick(false),
     motors(),
     buggyWebServer(handleClientData, getData, SSID, WIFI_PASSWORD), //can also use the other constructor (int, function, function, const char*, const char*) to set the polling rate
@@ -45,6 +46,19 @@ class HydronixRover{
   }
 
   private:
+
+  std::function<void(RC_state)> handleRCData = [this](RC_state state){
+
+    if(state.failsafe < 0){
+      return;
+    }
+
+    if(!joystick){
+      return;
+    }
+
+    motors.set(state.y,state.x);
+  };
 
   std::function<void(String)> handleClientData = [this](String payloadString){
 
@@ -83,6 +97,7 @@ class HydronixRover{
   Driving_system motors;
   Web_IO buggyWebServer;
   bool joystick;
+  RC radioControl;
 
   clientData clientState;
 

@@ -81,17 +81,24 @@ void print_state (RC_state state){ //debuging code should not be in the class de
           low += 2;
         }
         
-        for (int i = 0; i < IBUS_MAXCHANNELS; i++){
-          if(x_channel == i+1){
-            state.x = map(rcValue[i], 1000, 2000, 1000, 2000)/5 - 300;
+          state.x = map(rcValue[x_channel-1], 1000, 2000, 1000, 2000);
+          state.y = map(rcValue[y_channel-1], 1000, 2000, 1000, 2000);
+          state.failsafe = map(rcValue[failsafe_channel-1], 1000, 2000, 1000, 2000);
+
+          double tmp; //map from 100 to -100          
+          tmp = state.x/5 - 300;
+          if(tmp>0){
+            state.x = min(tmp, 100);
+          }else{
+            state.x = max(tmp, -100);
           }
-          if(y_channel == i+1){
-            state.y = map(rcValue[i], 1000, 2000, 1000, 2000)/5 - 300;
+          tmp = state.y/5 - 300;
+          if(tmp>0){
+            state.y = min(tmp, 100);
+          }else{
+            state.y = max(tmp, -100);
           }
-           if(failsafe_channel == i+1){
-            state.failsafe = map(rcValue[i], 1000, 2000, 1000, 2000)/5 - 300;
-          }
-        }
+
         print_state(state);
 
         handle_new_RX_reading(state);

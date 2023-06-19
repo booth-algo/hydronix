@@ -32,7 +32,7 @@ thanks, alex.
 */
 
 #include <string.h>
-#include <ESP32Servo.h>
+#include <Servo.h>
 
 #define IBUS_BUFFSIZE 32    
 #define IBUS_MAXCHANNELS 10

@@ -47,7 +47,7 @@ public:
     int count = 0;
     bool start = 0;
     int start_time = millis();
-    int timeout = 100;
+    int timeout = 200;
 
     while (count < 4) {
 
